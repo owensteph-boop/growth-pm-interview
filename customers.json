@@ -1,0 +1,369 @@
+[
+  {
+    "id": "cust_001",
+    "company": "Bright Smile Dental Group",
+    "employeeCount": 34,
+    "plan": "essentials",
+    "addOns": ["payroll"],
+    "accountAgeDays": 390,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 0.85,
+      "pto": 1.0
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-15",
+    "churnRisk": "low",
+    "healthScore": 88,
+    "contractStartDate": "2025-02-19"
+  },
+  {
+    "id": "cust_002",
+    "company": "Cornerstone Legal Partners",
+    "employeeCount": 28,
+    "plan": "essentials",
+    "addOns": [],
+    "accountAgeDays": 210,
+    "activeModules": ["core_hr", "employee_records"],
+    "moduleSetupProgress": {
+      "core_hr": 0.6,
+      "employee_records": 0.3
+    },
+    "onboardingStatus": "stalled",
+    "lastLogin": "2026-02-18",
+    "churnRisk": "high",
+    "healthScore": 29,
+    "contractStartDate": "2025-08-18"
+  },
+  {
+    "id": "cust_003",
+    "company": "Redwood Construction LLC",
+    "employeeCount": 47,
+    "plan": "essentials",
+    "addOns": ["payroll"],
+    "accountAgeDays": 540,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-16",
+    "churnRisk": "low",
+    "healthScore": 92,
+    "contractStartDate": "2024-09-18"
+  },
+  {
+    "id": "cust_004",
+    "company": "Sapphire Nail & Spa Studio",
+    "employeeCount": 26,
+    "plan": "essentials",
+    "addOns": [],
+    "accountAgeDays": 75,
+    "activeModules": ["core_hr", "employee_records", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 0.8,
+      "employee_records": 0.5,
+      "pto": 0.2
+    },
+    "onboardingStatus": "in_progress",
+    "lastLogin": "2026-03-12",
+    "churnRisk": "medium",
+    "healthScore": 55,
+    "contractStartDate": "2025-12-31"
+  },
+  {
+    "id": "cust_005",
+    "company": "Iron Bridge Fabrication",
+    "employeeCount": 42,
+    "plan": "essentials",
+    "addOns": ["payroll"],
+    "accountAgeDays": 310,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 0.9,
+      "pto": 1.0
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-14",
+    "churnRisk": "low",
+    "healthScore": 82,
+    "contractStartDate": "2025-05-10"
+  },
+  {
+    "id": "cust_006",
+    "company": "Patel Family Medicine",
+    "employeeCount": 31,
+    "plan": "essentials",
+    "addOns": ["payroll"],
+    "accountAgeDays": 420,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-16",
+    "churnRisk": "low",
+    "healthScore": 91,
+    "contractStartDate": "2025-01-20"
+  },
+  {
+    "id": "cust_007",
+    "company": "Golden Fork Restaurants Inc.",
+    "employeeCount": 38,
+    "plan": "essentials",
+    "addOns": [],
+    "accountAgeDays": 150,
+    "activeModules": ["core_hr"],
+    "moduleSetupProgress": {
+      "core_hr": 0.4
+    },
+    "onboardingStatus": "stalled",
+    "lastLogin": "2026-01-28",
+    "churnRisk": "high",
+    "healthScore": 18,
+    "contractStartDate": "2025-10-17"
+  },
+  {
+    "id": "cust_008",
+    "company": "Lakeshore Property Management",
+    "employeeCount": 33,
+    "plan": "essentials",
+    "addOns": ["payroll", "lms"],
+    "accountAgeDays": 365,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 0.7,
+      "pto": 0.95
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-15",
+    "churnRisk": "low",
+    "healthScore": 79,
+    "contractStartDate": "2025-03-16"
+  },
+  {
+    "id": "cust_009",
+    "company": "TrueNorth Bookkeeping",
+    "employeeCount": 25,
+    "plan": "essentials",
+    "addOns": [],
+    "accountAgeDays": 45,
+    "activeModules": ["core_hr", "employee_records"],
+    "moduleSetupProgress": {
+      "core_hr": 0.7,
+      "employee_records": 0.4
+    },
+    "onboardingStatus": "in_progress",
+    "lastLogin": "2026-03-10",
+    "churnRisk": "medium",
+    "healthScore": 50,
+    "contractStartDate": "2026-01-30"
+  },
+  {
+    "id": "cust_010",
+    "company": "Summit Ridge Veterinary Clinic",
+    "employeeCount": 29,
+    "plan": "essentials",
+    "addOns": ["payroll"],
+    "accountAgeDays": 260,
+    "activeModules": ["core_hr", "employee_records", "pto"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 0.9,
+      "pto": 0.75
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-13",
+    "churnRisk": "low",
+    "healthScore": 72,
+    "contractStartDate": "2025-06-29"
+  },
+  {
+    "id": "cust_011",
+    "company": "Cascade Event Staffing",
+    "employeeCount": 50,
+    "plan": "essentials",
+    "addOns": [],
+    "accountAgeDays": 30,
+    "activeModules": ["core_hr"],
+    "moduleSetupProgress": {
+      "core_hr": 0.15
+    },
+    "onboardingStatus": "not_started",
+    "lastLogin": "2026-03-02",
+    "churnRisk": "high",
+    "healthScore": 12,
+    "contractStartDate": "2026-02-14"
+  },
+  {
+    "id": "cust_012",
+    "company": "Meridian Logistics Solutions",
+    "employeeCount": 85,
+    "plan": "advantage",
+    "addOns": ["payroll", "candidate_assessments"],
+    "accountAgeDays": 380,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "ats", "time_tracking", "performance"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0,
+      "ats": 0.9,
+      "time_tracking": 1.0,
+      "performance": 0.8
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-16",
+    "churnRisk": "low",
+    "healthScore": 94,
+    "contractStartDate": "2025-02-28"
+  },
+  {
+    "id": "cust_013",
+    "company": "Greenleaf Marketing Group",
+    "employeeCount": 62,
+    "plan": "advantage",
+    "addOns": ["payroll", "eor"],
+    "accountAgeDays": 280,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "ats", "time_tracking"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 0.6,
+      "pto": 1.0,
+      "ats": 0.45,
+      "time_tracking": 0.3
+    },
+    "onboardingStatus": "in_progress",
+    "lastLogin": "2026-03-11",
+    "churnRisk": "medium",
+    "healthScore": 58,
+    "contractStartDate": "2025-06-09"
+  },
+  {
+    "id": "cust_014",
+    "company": "Atlas IT Consulting",
+    "employeeCount": 110,
+    "plan": "advantage",
+    "addOns": ["payroll", "lms"],
+    "accountAgeDays": 500,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "ats", "time_tracking", "performance"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0,
+      "ats": 1.0,
+      "time_tracking": 1.0,
+      "performance": 0.95
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-16",
+    "churnRisk": "low",
+    "healthScore": 96,
+    "contractStartDate": "2024-10-28"
+  },
+  {
+    "id": "cust_015",
+    "company": "Harborview Physical Therapy",
+    "employeeCount": 72,
+    "plan": "advantage",
+    "addOns": ["payroll"],
+    "accountAgeDays": 190,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "time_tracking"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 0.85,
+      "reporting": 0.5,
+      "pto": 0.9,
+      "time_tracking": 0.6
+    },
+    "onboardingStatus": "in_progress",
+    "lastLogin": "2026-03-14",
+    "churnRisk": "medium",
+    "healthScore": 63,
+    "contractStartDate": "2025-09-07"
+  },
+  {
+    "id": "cust_016",
+    "company": "Pinnacle Architecture + Design",
+    "employeeCount": 55,
+    "plan": "advantage",
+    "addOns": ["candidate_assessments"],
+    "accountAgeDays": 120,
+    "activeModules": ["core_hr", "employee_records", "pto", "ats"],
+    "moduleSetupProgress": {
+      "core_hr": 0.9,
+      "employee_records": 0.7,
+      "pto": 0.5,
+      "ats": 0.25
+    },
+    "onboardingStatus": "in_progress",
+    "lastLogin": "2026-03-09",
+    "churnRisk": "medium",
+    "healthScore": 48,
+    "contractStartDate": "2025-11-16"
+  },
+  {
+    "id": "cust_017",
+    "company": "NovaTech Workforce Solutions",
+    "employeeCount": 340,
+    "plan": "premium",
+    "addOns": ["payroll", "eor", "lms", "candidate_assessments"],
+    "accountAgeDays": 780,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "ats", "time_tracking", "performance", "benefits_admin", "analytics"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0,
+      "ats": 1.0,
+      "time_tracking": 1.0,
+      "performance": 1.0,
+      "benefits_admin": 1.0,
+      "analytics": 0.95
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-16",
+    "churnRisk": "low",
+    "healthScore": 97,
+    "contractStartDate": "2024-01-26"
+  },
+  {
+    "id": "cust_018",
+    "company": "Sterling Healthcare Partners",
+    "employeeCount": 475,
+    "plan": "premium",
+    "addOns": ["payroll", "eor", "candidate_assessments"],
+    "accountAgeDays": 600,
+    "activeModules": ["core_hr", "employee_records", "reporting", "pto", "ats", "time_tracking", "performance", "benefits_admin", "analytics"],
+    "moduleSetupProgress": {
+      "core_hr": 1.0,
+      "employee_records": 1.0,
+      "reporting": 1.0,
+      "pto": 1.0,
+      "ats": 0.95,
+      "time_tracking": 1.0,
+      "performance": 0.9,
+      "benefits_admin": 0.85,
+      "analytics": 0.7
+    },
+    "onboardingStatus": "complete",
+    "lastLogin": "2026-03-15",
+    "churnRisk": "low",
+    "healthScore": 90,
+    "contractStartDate": "2024-07-25"
+  }
+]

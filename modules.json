@@ -1,0 +1,205 @@
+{
+  "modules": [
+    {
+      "id": "core_hr",
+      "name": "Core HR",
+      "description": "Centralized employee records, org charts, and company directory. Serves as the foundation for all other MapleHR modules.",
+      "type": "plan_tier",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Configure company profile and legal entities",
+        "Define organizational structure and departments",
+        "Set up employee record templates and custom fields",
+        "Import existing employee data via CSV or HRIS migration",
+        "Configure org chart display preferences and access permissions"
+      ],
+      "avgSetupTimeMinutes": 90
+    },
+    {
+      "id": "employee_records",
+      "name": "Employee Records",
+      "description": "Comprehensive employee data management including personal details, employment history, documents, and compliance records. Supports secure document storage and e-signatures.",
+      "type": "plan_tier",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Define required employee fields and custom attributes",
+        "Configure document categories and retention policies",
+        "Set up employee self-service portal permissions",
+        "Import historical employee documents and records",
+        "Enable e-signature workflows for onboarding paperwork"
+      ],
+      "avgSetupTimeMinutes": 60
+    },
+    {
+      "id": "reporting",
+      "name": "Reporting",
+      "description": "Standard HR reports covering headcount, turnover, demographics, and compliance. Includes scheduled report delivery and export capabilities.",
+      "type": "plan_tier",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Select and configure default report templates",
+        "Define report access permissions by role",
+        "Set up scheduled report delivery via email",
+        "Configure data filters and saved report views"
+      ],
+      "avgSetupTimeMinutes": 30
+    },
+    {
+      "id": "pto",
+      "name": "PTO Management",
+      "description": "Manage paid time off policies, accruals, requests, and approvals. Supports multiple leave types, blackout dates, and team calendar views.",
+      "type": "plan_tier",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Create PTO policies and accrual rules for each leave type",
+        "Configure approval workflows and manager delegation",
+        "Set company holidays and blackout dates",
+        "Import current employee PTO balances",
+        "Enable team calendar and absence notifications"
+      ],
+      "avgSetupTimeMinutes": 45
+    },
+    {
+      "id": "ats",
+      "name": "Hiring / ATS",
+      "description": "Applicant tracking system for managing job postings, candidate pipelines, interview scheduling, and offer letters. Integrates with major job boards.",
+      "type": "plan_tier",
+      "availableOn": ["advantage", "premium"],
+      "setupSteps": [
+        "Configure careers page branding and job posting templates",
+        "Define hiring pipeline stages and scorecards",
+        "Set up interview scheduling and calendar integrations",
+        "Connect job board distribution channels",
+        "Configure offer letter templates and approval workflows",
+        "Define hiring team roles and permissions"
+      ],
+      "avgSetupTimeMinutes": 120
+    },
+    {
+      "id": "time_tracking",
+      "name": "Time Tracking",
+      "description": "Track employee hours, manage timesheets, and enforce overtime rules. Supports clock-in/out, project-based tracking, and payroll integration.",
+      "type": "plan_tier",
+      "availableOn": ["advantage", "premium"],
+      "setupSteps": [
+        "Define work schedules, shift patterns, and overtime rules",
+        "Configure timesheet approval workflows",
+        "Set up clock-in/out methods (web, mobile, kiosk)",
+        "Map time entries to projects or cost centers",
+        "Configure break and meal period compliance rules"
+      ],
+      "avgSetupTimeMinutes": 60
+    },
+    {
+      "id": "performance",
+      "name": "Performance Management",
+      "description": "Run performance review cycles, set and track goals, and collect continuous feedback. Supports 360-degree reviews and calibration sessions.",
+      "type": "plan_tier",
+      "availableOn": ["advantage", "premium"],
+      "setupSteps": [
+        "Design review cycle templates and rating scales",
+        "Configure goal-setting frameworks (OKRs, KPIs)",
+        "Set up 360-degree feedback and peer review workflows",
+        "Define review cycle schedules and notification cadences",
+        "Configure calibration session settings and permissions"
+      ],
+      "avgSetupTimeMinutes": 75
+    },
+    {
+      "id": "benefits_admin",
+      "name": "Benefits Administration",
+      "description": "Manage employee benefits enrollment, carrier connections, and open enrollment periods. Supports medical, dental, vision, life, and voluntary benefits.",
+      "type": "plan_tier",
+      "availableOn": ["premium"],
+      "setupSteps": [
+        "Configure benefit plan types and coverage tiers",
+        "Connect insurance carriers via EDI feeds or API",
+        "Define eligibility rules and waiting periods",
+        "Set up open enrollment windows and life event triggers",
+        "Build employee-facing benefits selection experience",
+        "Test carrier file feeds and confirm data accuracy"
+      ],
+      "avgSetupTimeMinutes": 180
+    },
+    {
+      "id": "analytics",
+      "name": "Advanced Analytics",
+      "description": "Predictive workforce analytics with custom dashboards, attrition modeling, compensation benchmarking, and DEI insights. Powered by machine learning.",
+      "type": "plan_tier",
+      "availableOn": ["premium"],
+      "setupSteps": [
+        "Connect data sources and configure data pipeline refresh schedules",
+        "Select and customize analytics dashboard templates",
+        "Define key workforce metrics and KPI thresholds",
+        "Configure attrition risk model parameters",
+        "Set up automated insight alerts and distribution lists"
+      ],
+      "avgSetupTimeMinutes": 90
+    },
+    {
+      "id": "payroll",
+      "name": "Payroll",
+      "description": "Full-service payroll processing with tax filing, direct deposit, garnishments, and year-end reporting. Supports multi-state and multi-EIN configurations.",
+      "type": "addon",
+      "price": "$6/ee/mo",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Register company tax accounts and EINs by state",
+        "Configure pay schedules, pay groups, and earning codes",
+        "Set up direct deposit and payment methods",
+        "Import employee tax withholding elections (W-4 data)",
+        "Define deduction and garnishment rules",
+        "Run parallel payroll test cycle to validate calculations"
+      ],
+      "avgSetupTimeMinutes": 240
+    },
+    {
+      "id": "eor",
+      "name": "EOR / Global Employment",
+      "description": "Employer of Record service for hiring and paying employees in 100+ countries without establishing local entities. Handles local compliance, contracts, and benefits.",
+      "type": "addon",
+      "price": "$12/ee/mo",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Select target countries and review local employment requirements",
+        "Configure country-specific employment contract templates",
+        "Set up international payment methods and currency preferences",
+        "Define locally compliant benefits and statutory contributions",
+        "Establish expense reimbursement policies per country",
+        "Complete know-your-customer (KYC) verification"
+      ],
+      "avgSetupTimeMinutes": 300
+    },
+    {
+      "id": "lms",
+      "name": "Learning Management / Training",
+      "description": "Create, assign, and track employee training programs and compliance courses. Includes a course library, certification tracking, and learning path management.",
+      "type": "addon",
+      "price": "$3/ee/mo",
+      "availableOn": ["essentials", "advantage", "premium"],
+      "setupSteps": [
+        "Set up course categories and learning path structures",
+        "Upload or connect third-party training content libraries",
+        "Define mandatory compliance training assignments by role",
+        "Configure certification tracking and renewal reminders",
+        "Enable manager dashboards for team training progress"
+      ],
+      "avgSetupTimeMinutes": 60
+    },
+    {
+      "id": "candidate_assessments",
+      "name": "Candidate Assessments",
+      "description": "Pre-hire assessment tools including skills tests, cognitive evaluations, and structured interview kits. Requires the Hiring / ATS module to be active.",
+      "type": "addon",
+      "price": "$2/ee/mo",
+      "availableOn": ["advantage", "premium"],
+      "setupSteps": [
+        "Select assessment types and test libraries to enable",
+        "Map assessments to job roles and hiring pipeline stages",
+        "Configure scoring rubrics and pass/fail thresholds",
+        "Set up candidate communication templates for assessment invitations"
+      ],
+      "avgSetupTimeMinutes": 45
+    }
+  ]
+}
