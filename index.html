@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MapleHR</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maple: {
+              50: '#fef7ee',
+              100: '#fdedd3',
+              200: '#f9d7a5',
+              300: '#f5bb6d',
+              400: '#f09632',
+              500: '#ed7b12',
+              600: '#de6108',
+              700: '#b84909',
+              800: '#933a0e',
+              900: '#77310f',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .sidebar-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .progress-bar { transition: width 0.5s ease-in-out; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+
+  <!-- Top Bar -->
+  <header class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <svg class="w-8 h-8 text-maple-600" viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16 2C10 2 6 6 8 12C10 8 13 6 16 6C19 6 22 8 24 12C26 6 22 2 16 2ZM16 10C12 10 8 14 8 20C8 24 10 28 16 30C22 28 24 24 24 20C24 14 20 10 16 10Z"/>
+        </svg>
+        <span class="text-xl font-bold text-gray-900">MapleHR</span>
+      </div>
+
+      <!-- Account Switcher -->
+      <div class="relative ml-6">
+        <button id="account-switcher-btn" class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          <span id="account-switcher-label">Loading...</span>
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="account-switcher-dropdown" class="hidden absolute top-full left-0 mt-1 w-80 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50">
+          <div class="p-2">
+            <input id="account-search" type="text" placeholder="Search accounts..." class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-maple-500 focus:border-transparent">
+          </div>
+          <div id="account-list" class="py-1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-500">Sr. HR Administrator</span>
+      <div id="admin-avatar" class="w-8 h-8 bg-maple-100 text-maple-800 rounded-full flex items-center justify-center text-sm font-semibold">JD</div>
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <nav class="w-56 bg-white border-r border-gray-200 min-h-[calc(100vh-57px)] p-4 flex flex-col gap-1 sticky top-[57px] self-start">
+      <a href="#" data-page="home" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-maple-700 bg-maple-50">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+      </a>
+      <a href="#" data-page="modules" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        Modules
+      </a>
+
+      <div class="mt-4 mb-1 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Platform</div>
+
+      <a href="#" data-page="people" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        People
+      </a>
+      <a href="#" data-page="timeoff" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Time Off
+      </a>
+      <a href="#" data-page="hiring" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Hiring
+      </a>
+      <a href="#" data-page="timetracking" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Time Tracking
+      </a>
+      <a href="#" data-page="reports" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Reports
+      </a>
+      <a href="#" data-page="performance" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Performance
+      </a>
+      <a href="#" data-page="benefits" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+        <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        Benefits
+      </a>
+
+      <div class="mt-auto pt-4 border-t border-gray-200">
+        <a href="#" data-page="settings" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+          <svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Settings
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 max-w-5xl">
+
+      <!-- HOME PAGE -->
+      <div id="page-home">
+
+        <div class="mb-8">
+          <h1 id="welcome-heading" class="text-2xl font-bold text-gray-900">Welcome back, Jordan</h1>
+        </div>
+
+        <!-- Quick Access Widgets -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+          <!-- My Time Widget -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-semibold text-gray-700">My Time</h3>
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">6h 42m</div>
+            <div class="text-sm text-gray-500 mt-1">Clocked in today</div>
+            <button class="mt-3 w-full px-4 py-2 bg-maple-50 text-maple-700 text-sm font-medium rounded-lg hover:bg-maple-100 transition-colors">Clock Out</button>
+          </div>
+
+          <!-- Time Off Widget -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-semibold text-gray-700">Time Off</h3>
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-bold text-gray-900">12.5</span>
+              <span class="text-sm text-gray-500">days available</span>
+            </div>
+            <div class="text-sm text-gray-500 mt-1">3 days used this year</div>
+            <button class="mt-3 w-full px-4 py-2 bg-maple-50 text-maple-700 text-sm font-medium rounded-lg hover:bg-maple-100 transition-colors">Request Time Off</button>
+          </div>
+
+          <!-- Team Widget -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-semibold text-gray-700">Team</h3>
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <div id="team-out-today" class="text-3xl font-bold text-gray-900">2</div>
+            <div class="text-sm text-gray-500 mt-1">out today</div>
+            <button class="mt-3 w-full px-4 py-2 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200">View Calendar</button>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700">What's Happening</h3>
+          </div>
+          <div id="activity-feed" class="divide-y divide-gray-100"></div>
+        </div>
+      </div>
+
+      <!-- MODULES PAGE -->
+      <div id="page-modules" class="hidden">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Modules</h1>
+        <p class="text-sm text-gray-500 mb-6">Your active modules and available features</p>
+
+        <div class="mb-6">
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Active Modules</h2>
+          <div id="active-modules" class="space-y-3"></div>
+        </div>
+
+        <div>
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Add-ons</h2>
+          <div id="addon-modules" class="space-y-3"></div>
+        </div>
+
+        <div id="advantage-upsell-section" class="hidden mt-6">
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Available with Advantage</h2>
+          <div id="locked-advantage-modules" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- PEOPLE PAGE -->
+      <div id="page-people" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">People</h1>
+            <p class="text-sm text-gray-500 mt-1">Employee directory</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">+ Add Employee</button>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <input type="text" placeholder="Search employees..." class="px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-maple-500 w-64">
+              <select class="px-3 py-1.5 text-sm border border-gray-200 rounded-md text-gray-600">
+                <option>All Departments</option>
+                <option>Engineering</option>
+                <option>Sales</option>
+                <option>Marketing</option>
+                <option>Operations</option>
+                <option>Finance</option>
+                <option>HR</option>
+              </select>
+              <select class="px-3 py-1.5 text-sm border border-gray-200 rounded-md text-gray-600">
+                <option>All Statuses</option>
+                <option>Active</option>
+                <option>On Leave</option>
+                <option>Terminated</option>
+              </select>
+            </div>
+            <span id="people-count" class="text-xs text-gray-500"></span>
+          </div>
+          <table class="w-full">
+            <thead>
+              <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                <th class="px-5 py-3">Employee</th>
+                <th class="px-5 py-3">Department</th>
+                <th class="px-5 py-3">Job Title</th>
+                <th class="px-5 py-3">Status</th>
+                <th class="px-5 py-3">Start Date</th>
+              </tr>
+            </thead>
+            <tbody id="people-table-body" class="divide-y divide-gray-50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TIME OFF PAGE -->
+      <div id="page-timeoff" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Time Off</h1>
+            <p class="text-sm text-gray-500 mt-1">Leave balances, requests, and calendar</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">Request Time Off</button>
+        </div>
+
+        <!-- Balances -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Vacation</div>
+            <div class="text-2xl font-bold text-gray-900">12.5 <span class="text-sm font-normal text-gray-500">days</span></div>
+            <div class="text-xs text-gray-500 mt-1">3 used · 15.5 total</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Sick Leave</div>
+            <div class="text-2xl font-bold text-gray-900">8 <span class="text-sm font-normal text-gray-500">days</span></div>
+            <div class="text-xs text-gray-500 mt-1">2 used · 10 total</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Personal</div>
+            <div class="text-2xl font-bold text-gray-900">3 <span class="text-sm font-normal text-gray-500">days</span></div>
+            <div class="text-xs text-gray-500 mt-1">0 used · 3 total</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Pending Requests</div>
+            <div class="text-2xl font-bold text-amber-600">1</div>
+            <div class="text-xs text-gray-500 mt-1">Awaiting approval</div>
+          </div>
+        </div>
+
+        <!-- Upcoming Out -->
+        <div class="bg-white rounded-xl border border-gray-200 mb-6">
+          <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-700">Who's Out</h3>
+            <div class="flex gap-2">
+              <button class="px-3 py-1 text-xs font-medium bg-maple-50 text-maple-800 rounded-md">This Week</button>
+              <button class="px-3 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 rounded-md">This Month</button>
+            </div>
+          </div>
+          <div id="timeoff-whos-out" class="divide-y divide-gray-50"></div>
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700">Recent Requests</h3>
+          </div>
+          <table class="w-full">
+            <thead>
+              <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                <th class="px-5 py-3">Employee</th>
+                <th class="px-5 py-3">Type</th>
+                <th class="px-5 py-3">Dates</th>
+                <th class="px-5 py-3">Duration</th>
+                <th class="px-5 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="timeoff-requests-body" class="divide-y divide-gray-50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- HIRING PAGE -->
+      <div id="page-hiring" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Hiring</h1>
+            <p class="text-sm text-gray-500 mt-1">Job postings and candidate pipeline</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">+ New Job Posting</button>
+        </div>
+
+        <!-- Pipeline Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+            <div class="text-2xl font-bold text-gray-900">3</div>
+            <div class="text-xs text-gray-500 mt-1">Open Positions</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+            <div class="text-2xl font-bold text-gray-900">24</div>
+            <div class="text-xs text-gray-500 mt-1">Total Candidates</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+            <div class="text-2xl font-bold text-blue-600">8</div>
+            <div class="text-xs text-gray-500 mt-1">In Review</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+            <div class="text-2xl font-bold text-amber-600">5</div>
+            <div class="text-xs text-gray-500 mt-1">Interviewing</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+            <div class="text-2xl font-bold text-green-600">2</div>
+            <div class="text-xs text-gray-500 mt-1">Offer Stage</div>
+          </div>
+        </div>
+
+        <!-- Job Postings -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700">Open Positions</h3>
+          </div>
+          <div id="hiring-jobs" class="divide-y divide-gray-100"></div>
+        </div>
+      </div>
+
+      <!-- TIME TRACKING PAGE -->
+      <div id="page-timetracking" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Time Tracking</h1>
+            <p class="text-sm text-gray-500 mt-1">Timesheets and hours</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">Export</button>
+            <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">Clock In</button>
+          </div>
+        </div>
+
+        <!-- Week Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Today</div>
+            <div class="text-2xl font-bold text-gray-900">6h 42m</div>
+            <div class="text-xs text-green-600 mt-1">Currently clocked in</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">This Week</div>
+            <div class="text-2xl font-bold text-gray-900">28h 15m</div>
+            <div class="text-xs text-gray-500 mt-1">of 40h target</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Overtime</div>
+            <div class="text-2xl font-bold text-gray-900">0h</div>
+            <div class="text-xs text-gray-500 mt-1">This pay period</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Pending Approval</div>
+            <div class="text-2xl font-bold text-amber-600">3</div>
+            <div class="text-xs text-gray-500 mt-1">Timesheets to review</div>
+          </div>
+        </div>
+
+        <!-- Timesheet Table -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-700">This Week — Mar 10 – Mar 16</h3>
+            <div class="flex gap-2">
+              <button class="px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 rounded">← Prev</button>
+              <button class="px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 rounded">Next →</button>
+            </div>
+          </div>
+          <table class="w-full">
+            <thead>
+              <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                <th class="px-5 py-3">Day</th>
+                <th class="px-5 py-3">Clock In</th>
+                <th class="px-5 py-3">Clock Out</th>
+                <th class="px-5 py-3">Break</th>
+                <th class="px-5 py-3">Total</th>
+                <th class="px-5 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="timetracking-body" class="divide-y divide-gray-50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORTS PAGE -->
+      <div id="page-reports" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Reports</h1>
+            <p class="text-sm text-gray-500 mt-1">HR reports and analytics</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">+ Create Report</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Total Reports</div>
+            <div class="text-2xl font-bold text-gray-900">12</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Scheduled</div>
+            <div class="text-2xl font-bold text-gray-900">4</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Last Generated</div>
+            <div class="text-2xl font-bold text-gray-900">Today</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-700">Report Library</h3>
+            <input type="text" placeholder="Search reports..." class="px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-maple-500 w-48">
+          </div>
+          <div id="reports-list" class="divide-y divide-gray-100"></div>
+        </div>
+      </div>
+
+      <!-- PERFORMANCE PAGE -->
+      <div id="page-performance" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Performance</h1>
+            <p class="text-sm text-gray-500 mt-1">Reviews, goals, and feedback</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">+ Start Review Cycle</button>
+        </div>
+
+        <!-- Review Cycle Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Current Cycle</div>
+            <div class="text-lg font-bold text-gray-900">Q1 2026 Review</div>
+            <div class="text-xs text-amber-600 mt-1">In progress — 68% complete</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Active Goals</div>
+            <div id="performance-goals-count" class="text-2xl font-bold text-gray-900">—</div>
+            <div class="text-xs text-gray-500 mt-1">Across all employees</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Feedback Received</div>
+            <div class="text-2xl font-bold text-gray-900">47</div>
+            <div class="text-xs text-gray-500 mt-1">This quarter</div>
+          </div>
+        </div>
+
+        <!-- Reviews Table -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-gray-700">Q1 2026 — Employee Reviews</h3>
+            <div class="flex gap-2">
+              <button class="px-3 py-1 text-xs font-medium bg-maple-50 text-maple-800 rounded-md">All</button>
+              <button class="px-3 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 rounded-md">Pending</button>
+              <button class="px-3 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 rounded-md">Completed</button>
+            </div>
+          </div>
+          <table class="w-full">
+            <thead>
+              <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                <th class="px-5 py-3">Employee</th>
+                <th class="px-5 py-3">Manager</th>
+                <th class="px-5 py-3">Self Review</th>
+                <th class="px-5 py-3">Manager Review</th>
+                <th class="px-5 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="performance-reviews-body" class="divide-y divide-gray-50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BENEFITS PAGE -->
+      <div id="page-benefits" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Benefits</h1>
+            <p class="text-sm text-gray-500 mt-1">Employee benefits and enrollment</p>
+          </div>
+          <button class="px-4 py-2 bg-maple-600 text-white text-sm font-medium rounded-lg hover:bg-maple-700 transition-colors">Manage Plans</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Enrolled Employees</div>
+            <div id="benefits-enrolled" class="text-2xl font-bold text-gray-900">—</div>
+            <div class="text-xs text-gray-500 mt-1">of total headcount</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Open Enrollment</div>
+            <div class="text-lg font-bold text-gray-900">Nov 1 – Nov 30</div>
+            <div class="text-xs text-gray-500 mt-1">Next enrollment window</div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="text-xs font-medium text-gray-500 uppercase mb-1">Active Plans</div>
+            <div class="text-2xl font-bold text-gray-900">4</div>
+            <div class="text-xs text-gray-500 mt-1">Medical, Dental, Vision, Life</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-700">Benefit Plans</h3>
+          </div>
+          <div id="benefits-plans" class="divide-y divide-gray-100"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PAGE -->
+      <div id="page-settings" class="hidden">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
+          <p class="text-sm text-gray-500 mt-1">Account configuration and preferences</p>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Company Info -->
+          <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="text-sm font-semibold text-gray-700 mb-4">Company Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Company Name</label>
+                <input id="settings-company-name" type="text" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Employees</label>
+                <input id="settings-employee-count" type="text" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Plan</label>
+                <input id="settings-plan" type="text" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Account Since</label>
+                <input id="settings-since" type="text" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50" readonly>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="text-sm font-semibold text-gray-700 mb-4">Notification Preferences</h3>
+            <div class="space-y-3">
+              <label class="flex items-center justify-between">
+                <span class="text-sm text-gray-700">Email notifications for time-off requests</span>
+                <div class="w-10 h-6 bg-maple-500 rounded-full relative cursor-pointer"><div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div></div>
+              </label>
+              <label class="flex items-center justify-between">
+                <span class="text-sm text-gray-700">Weekly summary digest</span>
+                <div class="w-10 h-6 bg-maple-500 rounded-full relative cursor-pointer"><div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div></div>
+              </label>
+              <label class="flex items-center justify-between">
+                <span class="text-sm text-gray-700">New hire onboarding alerts</span>
+                <div class="w-10 h-6 bg-gray-300 rounded-full relative cursor-pointer"><div class="w-4 h-4 bg-white rounded-full absolute top-1 left-1"></div></div>
+              </label>
+              <label class="flex items-center justify-between">
+                <span class="text-sm text-gray-700">Performance review reminders</span>
+                <div class="w-10 h-6 bg-maple-500 rounded-full relative cursor-pointer"><div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Integrations -->
+          <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <h3 class="text-sm font-semibold text-gray-700 mb-4">Integrations</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xs font-bold">S</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">Slack</div>
+                    <div class="text-xs text-green-600">Connected</div>
+                  </div>
+                </div>
+                <button class="text-xs text-gray-500 hover:text-gray-700">Configure</button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-xs font-bold">QB</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">QuickBooks</div>
+                    <div class="text-xs text-green-600">Connected</div>
+                  </div>
+                </div>
+                <button class="text-xs text-gray-500 hover:text-gray-700">Configure</button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-gray-100 text-gray-500 rounded-lg flex items-center justify-center text-xs font-bold">GC</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">Google Calendar</div>
+                    <div class="text-xs text-gray-500">Not connected</div>
+                  </div>
+                </div>
+                <button class="text-xs text-maple-600 hover:text-maple-700 font-medium">Connect</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed top-5 right-5 z-[200] flex items-start gap-3 bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 max-w-xs transition-opacity duration-300">
+  <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+    <svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <p id="toast-message" class="text-sm text-gray-800 leading-snug"></p>
+</div>
+
+<!-- Upgrade to Advantage Modal -->
+<div id="upgrade-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="upgrade-modal-backdrop" class="absolute inset-0 bg-black/50"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+
+    <!-- Close button (always visible) -->
+    <button id="upgrade-modal-close" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors z-10">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    <!-- Panel 1: Feature teaser -->
+    <div id="upgrade-panel-teaser" class="p-6">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+        <span class="text-xs font-semibold text-purple-700 uppercase tracking-wide">Advantage Feature</span>
+      </div>
+      <h2 id="upgrade-modal-feature-name" class="text-xl font-bold text-gray-900 mb-2"></h2>
+      <p id="upgrade-modal-value-prop" class="text-sm text-gray-600 mb-5"></p>
+      <div class="flex items-baseline gap-1.5 bg-purple-50 rounded-xl px-4 py-3 mb-5">
+        <span class="text-2xl font-bold text-purple-700">+$3</span>
+        <span class="text-sm text-purple-600 font-medium">/ee/mo to unlock Advantage</span>
+      </div>
+      <button id="upgrade-modal-cta" class="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl transition-colors">
+        Upgrade to Advantage
+      </button>
+    </div>
+
+    <!-- Panel 2: Upgrade confirmation -->
+    <div id="upgrade-panel-confirm" class="hidden p-6">
+      <button id="upgrade-confirm-back" class="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 mb-5 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+
+      <div class="flex items-center justify-between mb-1">
+        <h2 class="text-xl font-bold text-gray-900">Advantage Plan</h2>
+        <div class="text-right">
+          <span class="text-2xl font-bold text-gray-900">$9</span>
+          <span class="text-sm text-gray-500">/ee/mo</span>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 mb-5">Billed monthly · cancel anytime</p>
+
+      <div class="bg-gray-50 rounded-xl p-4 mb-5">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">What's included</p>
+        <ul class="space-y-2">
+          <li class="flex items-center gap-2 text-sm text-gray-600">
+            <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Everything in Essentials
+          </li>
+          <li class="flex items-center gap-2 text-sm text-gray-700 font-medium">
+            <svg class="w-4 h-4 text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Hiring / ATS
+          </li>
+          <li class="flex items-center gap-2 text-sm text-gray-700 font-medium">
+            <svg class="w-4 h-4 text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Time Tracking
+          </li>
+          <li class="flex items-center gap-2 text-sm text-gray-700 font-medium">
+            <svg class="w-4 h-4 text-purple-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Performance Management
+          </li>
+        </ul>
+      </div>
+
+      <div class="border border-purple-200 bg-purple-50 rounded-xl px-4 py-3 mb-5">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Your cost increase</p>
+        <p id="upgrade-cost-detail" class="text-sm text-gray-700"></p>
+        <p id="upgrade-cost-annual" class="text-xs text-gray-500 mt-0.5"></p>
+      </div>
+
+      <button id="upgrade-confirm-cta" class="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl transition-colors mb-3">
+        Confirm Upgrade
+      </button>
+      <div class="text-center">
+        <a href="#" id="upgrade-talk-to-sales" class="text-sm text-purple-600 hover:text-purple-800 font-medium">Talk to Sales</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script id="app-data">
+// ============================================================
+// Data — also available as JSON in /data/ for reference
+// ============================================================
+const DATA_CUSTOMERS = [{"id":"cust_001","company":"Bright Smile Dental Group","employeeCount":34,"plan":"essentials","addOns":["payroll"],"accountAgeDays":390,"activeModules":["core_hr","employee_records","reporting","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":0.85,"pto":1.0},"onboardingStatus":"complete","lastLogin":"2026-03-15","churnRisk":"low","healthScore":88,"contractStartDate":"2025-02-19"},{"id":"cust_002","company":"Cornerstone Legal Partners","employeeCount":28,"plan":"essentials","addOns":[],"accountAgeDays":210,"activeModules":["core_hr","employee_records"],"moduleSetupProgress":{"core_hr":0.6,"employee_records":0.3},"onboardingStatus":"stalled","lastLogin":"2026-02-18","churnRisk":"high","healthScore":29,"contractStartDate":"2025-08-18"},{"id":"cust_003","company":"Redwood Construction LLC","employeeCount":47,"plan":"essentials","addOns":["payroll"],"accountAgeDays":540,"activeModules":["core_hr","employee_records","reporting","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0},"onboardingStatus":"complete","lastLogin":"2026-03-16","churnRisk":"low","healthScore":92,"contractStartDate":"2024-09-18"},{"id":"cust_004","company":"Sapphire Nail & Spa Studio","employeeCount":26,"plan":"essentials","addOns":[],"accountAgeDays":75,"activeModules":["core_hr","employee_records","pto"],"moduleSetupProgress":{"core_hr":0.8,"employee_records":0.5,"pto":0.2},"onboardingStatus":"in_progress","lastLogin":"2026-03-12","churnRisk":"medium","healthScore":55,"contractStartDate":"2025-12-31"},{"id":"cust_005","company":"Iron Bridge Fabrication","employeeCount":42,"plan":"essentials","addOns":["payroll"],"accountAgeDays":310,"activeModules":["core_hr","employee_records","reporting","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":0.9,"pto":1.0},"onboardingStatus":"complete","lastLogin":"2026-03-14","churnRisk":"low","healthScore":82,"contractStartDate":"2025-05-10"},{"id":"cust_006","company":"Patel Family Medicine","employeeCount":31,"plan":"essentials","addOns":["payroll"],"accountAgeDays":420,"activeModules":["core_hr","employee_records","reporting","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0},"onboardingStatus":"complete","lastLogin":"2026-03-16","churnRisk":"low","healthScore":91,"contractStartDate":"2025-01-20"},{"id":"cust_007","company":"Golden Fork Restaurants Inc.","employeeCount":38,"plan":"essentials","addOns":[],"accountAgeDays":150,"activeModules":["core_hr"],"moduleSetupProgress":{"core_hr":0.4},"onboardingStatus":"stalled","lastLogin":"2026-01-28","churnRisk":"high","healthScore":18,"contractStartDate":"2025-10-17"},{"id":"cust_008","company":"Lakeshore Property Management","employeeCount":33,"plan":"essentials","addOns":["payroll","lms"],"accountAgeDays":365,"activeModules":["core_hr","employee_records","reporting","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":0.7,"pto":0.95},"onboardingStatus":"complete","lastLogin":"2026-03-15","churnRisk":"low","healthScore":79,"contractStartDate":"2025-03-16"},{"id":"cust_009","company":"TrueNorth Bookkeeping","employeeCount":25,"plan":"essentials","addOns":[],"accountAgeDays":45,"activeModules":["core_hr","employee_records"],"moduleSetupProgress":{"core_hr":0.7,"employee_records":0.4},"onboardingStatus":"in_progress","lastLogin":"2026-03-10","churnRisk":"medium","healthScore":50,"contractStartDate":"2026-01-30"},{"id":"cust_010","company":"Summit Ridge Veterinary Clinic","employeeCount":29,"plan":"essentials","addOns":["payroll"],"accountAgeDays":260,"activeModules":["core_hr","employee_records","pto"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":0.9,"pto":0.75},"onboardingStatus":"complete","lastLogin":"2026-03-13","churnRisk":"low","healthScore":72,"contractStartDate":"2025-06-29"},{"id":"cust_011","company":"Cascade Event Staffing","employeeCount":50,"plan":"essentials","addOns":[],"accountAgeDays":30,"activeModules":["core_hr"],"moduleSetupProgress":{"core_hr":0.15},"onboardingStatus":"not_started","lastLogin":"2026-03-02","churnRisk":"high","healthScore":12,"contractStartDate":"2026-02-14"},{"id":"cust_012","company":"Meridian Logistics Solutions","employeeCount":85,"plan":"advantage","addOns":["payroll","candidate_assessments"],"accountAgeDays":380,"activeModules":["core_hr","employee_records","reporting","pto","ats","time_tracking","performance"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0,"ats":0.9,"time_tracking":1.0,"performance":0.8},"onboardingStatus":"complete","lastLogin":"2026-03-16","churnRisk":"low","healthScore":94,"contractStartDate":"2025-02-28"},{"id":"cust_013","company":"Greenleaf Marketing Group","employeeCount":62,"plan":"advantage","addOns":["payroll","eor"],"accountAgeDays":280,"activeModules":["core_hr","employee_records","reporting","pto","ats","time_tracking"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":0.6,"pto":1.0,"ats":0.45,"time_tracking":0.3},"onboardingStatus":"in_progress","lastLogin":"2026-03-11","churnRisk":"medium","healthScore":58,"contractStartDate":"2025-06-09"},{"id":"cust_014","company":"Atlas IT Consulting","employeeCount":110,"plan":"advantage","addOns":["payroll","lms"],"accountAgeDays":500,"activeModules":["core_hr","employee_records","reporting","pto","ats","time_tracking","performance"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0,"ats":1.0,"time_tracking":1.0,"performance":0.95},"onboardingStatus":"complete","lastLogin":"2026-03-16","churnRisk":"low","healthScore":96,"contractStartDate":"2024-10-28"},{"id":"cust_015","company":"Harborview Physical Therapy","employeeCount":72,"plan":"advantage","addOns":["payroll"],"accountAgeDays":190,"activeModules":["core_hr","employee_records","reporting","pto","time_tracking"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":0.85,"reporting":0.5,"pto":0.9,"time_tracking":0.6},"onboardingStatus":"in_progress","lastLogin":"2026-03-14","churnRisk":"medium","healthScore":63,"contractStartDate":"2025-09-07"},{"id":"cust_016","company":"Pinnacle Architecture + Design","employeeCount":55,"plan":"advantage","addOns":["candidate_assessments"],"accountAgeDays":120,"activeModules":["core_hr","employee_records","pto","ats"],"moduleSetupProgress":{"core_hr":0.9,"employee_records":0.7,"pto":0.5,"ats":0.25},"onboardingStatus":"in_progress","lastLogin":"2026-03-09","churnRisk":"medium","healthScore":48,"contractStartDate":"2025-11-16"},{"id":"cust_017","company":"NovaTech Workforce Solutions","employeeCount":340,"plan":"premium","addOns":["payroll","eor","lms","candidate_assessments"],"accountAgeDays":780,"activeModules":["core_hr","employee_records","reporting","pto","ats","time_tracking","performance","benefits_admin","analytics"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0,"ats":1.0,"time_tracking":1.0,"performance":1.0,"benefits_admin":1.0,"analytics":0.95},"onboardingStatus":"complete","lastLogin":"2026-03-16","churnRisk":"low","healthScore":97,"contractStartDate":"2024-01-26"},{"id":"cust_018","company":"Sterling Healthcare Partners","employeeCount":475,"plan":"premium","addOns":["payroll","eor","candidate_assessments"],"accountAgeDays":600,"activeModules":["core_hr","employee_records","reporting","pto","ats","time_tracking","performance","benefits_admin","analytics"],"moduleSetupProgress":{"core_hr":1.0,"employee_records":1.0,"reporting":1.0,"pto":1.0,"ats":0.95,"time_tracking":1.0,"performance":0.9,"benefits_admin":0.85,"analytics":0.7},"onboardingStatus":"complete","lastLogin":"2026-03-15","churnRisk":"low","healthScore":90,"contractStartDate":"2024-07-25"}];
+
+const DATA_MODULES = [{"id":"core_hr","name":"Core HR","description":"Centralized employee records, org charts, and company directory. Serves as the foundation for all other MapleHR modules.","type":"plan_tier","availableOn":["essentials","advantage","premium"],"setupSteps":["Configure company profile and legal entities","Define organizational structure and departments","Set up employee record templates and custom fields","Import existing employee data via CSV or HRIS migration","Configure org chart display preferences and access permissions"],"avgSetupTimeMinutes":90},{"id":"employee_records","name":"Employee Records","description":"Comprehensive employee data management including personal details, employment history, documents, and compliance records. Supports secure document storage and e-signatures.","type":"plan_tier","availableOn":["essentials","advantage","premium"],"setupSteps":["Define required employee fields and custom attributes","Configure document categories and retention policies","Set up employee self-service portal permissions","Import historical employee documents and records","Enable e-signature workflows for onboarding paperwork"],"avgSetupTimeMinutes":60},{"id":"reporting","name":"Reporting","description":"Standard HR reports covering headcount, turnover, demographics, and compliance. Includes scheduled report delivery and export capabilities.","type":"plan_tier","availableOn":["essentials","advantage","premium"],"setupSteps":["Select and configure default report templates","Define report access permissions by role","Set up scheduled report delivery via email","Configure data filters and saved report views"],"avgSetupTimeMinutes":30},{"id":"pto","name":"PTO Management","description":"Manage paid time off policies, accruals, requests, and approvals. Supports multiple leave types, blackout dates, and team calendar views.","type":"plan_tier","availableOn":["essentials","advantage","premium"],"setupSteps":["Create PTO policies and accrual rules for each leave type","Configure approval workflows and manager delegation","Set company holidays and blackout dates","Import current employee PTO balances","Enable team calendar and absence notifications"],"avgSetupTimeMinutes":45},{"id":"ats","name":"Hiring / ATS","description":"Applicant tracking system for managing job postings, candidate pipelines, interview scheduling, and offer letters. Integrates with major job boards.","type":"plan_tier","availableOn":["advantage","premium"],"setupSteps":["Configure careers page branding and job posting templates","Define hiring pipeline stages and scorecards","Set up interview scheduling and calendar integrations","Connect job board distribution channels","Configure offer letter templates and approval workflows","Define hiring team roles and permissions"],"avgSetupTimeMinutes":120},{"id":"time_tracking","name":"Time Tracking","description":"Track employee hours, manage timesheets, and enforce overtime rules. Supports clock-in/out, project-based tracking, and payroll integration.","type":"plan_tier","availableOn":["advantage","premium"],"setupSteps":["Define work schedules, shift patterns, and overtime rules","Configure timesheet approval workflows","Set up clock-in/out methods (web, mobile, kiosk)","Map time entries to projects or cost centers","Configure break and meal period compliance rules"],"avgSetupTimeMinutes":60},{"id":"performance","name":"Performance Management","description":"Run performance review cycles, set and track goals, and collect continuous feedback. Supports 360-degree reviews and calibration sessions.","type":"plan_tier","availableOn":["advantage","premium"],"setupSteps":["Design review cycle templates and rating scales","Configure goal-setting frameworks (OKRs, KPIs)","Set up 360-degree feedback and peer review workflows","Define review cycle schedules and notification cadences","Configure calibration session settings and permissions"],"avgSetupTimeMinutes":75},{"id":"benefits_admin","name":"Benefits Administration","description":"Manage employee benefits enrollment, carrier connections, and open enrollment periods. Supports medical, dental, vision, life, and voluntary benefits.","type":"plan_tier","availableOn":["premium"],"setupSteps":["Configure benefit plan types and coverage tiers","Connect insurance carriers via EDI feeds or API","Define eligibility rules and waiting periods","Set up open enrollment windows and life event triggers","Build employee-facing benefits selection experience","Test carrier file feeds and confirm data accuracy"],"avgSetupTimeMinutes":180},{"id":"analytics","name":"Advanced Analytics","description":"Predictive workforce analytics with custom dashboards, attrition modeling, compensation benchmarking, and DEI insights. Powered by machine learning.","type":"plan_tier","availableOn":["premium"],"setupSteps":["Connect data sources and configure data pipeline refresh schedules","Select and customize analytics dashboard templates","Define key workforce metrics and KPI thresholds","Configure attrition risk model parameters","Set up automated insight alerts and distribution lists"],"avgSetupTimeMinutes":90},{"id":"payroll","name":"Payroll","description":"Full-service payroll processing with tax filing, direct deposit, garnishments, and year-end reporting. Supports multi-state and multi-EIN configurations.","type":"addon","price":"$6/ee/mo","availableOn":["essentials","advantage","premium"],"setupSteps":["Register company tax accounts and EINs by state","Configure pay schedules, pay groups, and earning codes","Set up direct deposit and payment methods","Import employee tax withholding elections (W-4 data)","Define deduction and garnishment rules","Run parallel payroll test cycle to validate calculations"],"avgSetupTimeMinutes":240},{"id":"eor","name":"EOR / Global Employment","description":"Employer of Record service for hiring and paying employees in 100+ countries without establishing local entities. Handles local compliance, contracts, and benefits.","type":"addon","price":"$12/ee/mo","availableOn":["essentials","advantage","premium"],"setupSteps":["Select target countries and review local employment requirements","Configure country-specific employment contract templates","Set up international payment methods and currency preferences","Define locally compliant benefits and statutory contributions","Establish expense reimbursement policies per country","Complete know-your-customer (KYC) verification"],"avgSetupTimeMinutes":300},{"id":"lms","name":"Learning Management / Training","description":"Create, assign, and track employee training programs and compliance courses. Includes a course library, certification tracking, and learning path management.","type":"addon","price":"$3/ee/mo","availableOn":["essentials","advantage","premium"],"setupSteps":["Set up course categories and learning path structures","Upload or connect third-party training content libraries","Define mandatory compliance training assignments by role","Configure certification tracking and renewal reminders","Enable manager dashboards for team training progress"],"avgSetupTimeMinutes":60},{"id":"candidate_assessments","name":"Candidate Assessments","description":"Pre-hire assessment tools including skills tests, cognitive evaluations, and structured interview kits. Requires the Hiring / ATS module to be active.","type":"addon","price":"$2/ee/mo","availableOn":["advantage","premium"],"setupSteps":["Select assessment types and test libraries to enable","Map assessments to job roles and hiring pipeline stages","Configure scoring rubrics and pass/fail thresholds","Set up candidate communication templates for assessment invitations"],"avgSetupTimeMinutes":45}];
+
+const DATA_USAGE_EVENTS = [{"customerId":"cust_001","event":"login","module":"core_hr","timestamp":"2026-01-05T08:12:33Z","metadata":{"userRole":"admin"}},{"customerId":"cust_001","event":"locked_feature_click","module":"ats","timestamp":"2026-01-06T10:45:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"applicant_tracking"}},{"customerId":"cust_001","event":"locked_feature_click","module":"performance","timestamp":"2026-01-14T14:22:10Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"performance_reviews"}},{"customerId":"cust_001","event":"manual_export","module":"reporting","timestamp":"2026-01-20T11:30:00Z","metadata":{"dataType":"employee_roster","currentPlan":"essentials"}},{"customerId":"cust_001","event":"manual_export","module":"reporting","timestamp":"2026-02-03T09:15:42Z","metadata":{"dataType":"pto_balances","currentPlan":"essentials"}},{"customerId":"cust_001","event":"limit_hit","module":"reporting","timestamp":"2026-02-10T16:05:00Z","metadata":{"limitType":"custom_reports","currentValue":5,"maxValue":5,"currentPlan":"essentials"}},{"customerId":"cust_001","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-12T13:40:00Z","metadata":{"addon":"payroll","currentPlan":"essentials"}},{"customerId":"cust_001","event":"support_ticket_filed","module":"ats","timestamp":"2026-02-18T10:00:00Z","metadata":{"topic":"How to track applicants without ATS module","category":"feature_inquiry","currentPlan":"essentials"}},{"customerId":"cust_001","event":"login","module":"core_hr","timestamp":"2026-03-01T08:05:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_001","event":"locked_feature_click","module":"time_tracking","timestamp":"2026-03-05T11:22:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"time_clock"}},{"customerId":"cust_002","event":"login","module":"core_hr","timestamp":"2026-01-02T09:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_002","event":"setup_step_completed","module":"core_hr","timestamp":"2026-01-02T09:15:00Z","metadata":{"module":"core_hr","step":"company_profile","stepNumber":1,"totalSteps":5}},{"customerId":"cust_002","event":"setup_step_completed","module":"core_hr","timestamp":"2026-01-02T09:30:00Z","metadata":{"module":"core_hr","step":"department_structure","stepNumber":2,"totalSteps":5}},{"customerId":"cust_002","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-02T09:35:00Z","metadata":{"module":"core_hr","step":"import_employees","stepNumber":3,"totalSteps":5}},{"customerId":"cust_002","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-02T09:36:00Z","metadata":{"module":"core_hr","step":"configure_roles","stepNumber":4,"totalSteps":5}},{"customerId":"cust_002","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-02T09:37:00Z","metadata":{"module":"core_hr","step":"notification_preferences","stepNumber":5,"totalSteps":5}},{"customerId":"cust_002","event":"locked_feature_click","module":"analytics","timestamp":"2026-01-15T14:10:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"premium","feature":"workforce_analytics"}},{"customerId":"cust_002","event":"manual_export","module":"employee_records","timestamp":"2026-02-01T10:20:00Z","metadata":{"dataType":"headcount_report","currentPlan":"essentials"}},{"customerId":"cust_002","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-20T15:00:00Z","metadata":{"addon":"payroll","currentPlan":"essentials"}},{"customerId":"cust_003","event":"login","module":"core_hr","timestamp":"2026-01-10T08:30:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_003","event":"locked_feature_click","module":"ats","timestamp":"2026-01-12T11:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"job_postings"}},{"customerId":"cust_003","event":"locked_feature_click","module":"ats","timestamp":"2026-01-19T14:30:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"candidate_pipeline"}},{"customerId":"cust_003","event":"locked_feature_click","module":"performance","timestamp":"2026-02-02T10:15:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"goal_tracking"}},{"customerId":"cust_003","event":"manual_export","module":"reporting","timestamp":"2026-02-05T09:45:00Z","metadata":{"dataType":"time_off_summary","currentPlan":"essentials"}},{"customerId":"cust_003","event":"limit_hit","module":"employee_records","timestamp":"2026-02-14T16:20:00Z","metadata":{"limitType":"active_employees","currentValue":50,"maxValue":50,"currentPlan":"essentials"}},{"customerId":"cust_003","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-15T10:00:00Z","metadata":{"addon":"lms","currentPlan":"essentials"}},{"customerId":"cust_003","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-22T11:30:00Z","metadata":{"addon":"payroll","currentPlan":"essentials"}},{"customerId":"cust_003","event":"support_ticket_filed","module":"performance","timestamp":"2026-03-01T13:00:00Z","metadata":{"topic":"Can I run performance reviews on Essentials?","category":"feature_inquiry","currentPlan":"essentials"}},{"customerId":"cust_003","event":"login","module":"core_hr","timestamp":"2026-03-10T08:15:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_004","event":"login","module":"core_hr","timestamp":"2026-01-08T07:50:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_004","event":"manual_export","module":"employee_records","timestamp":"2026-01-15T14:00:00Z","metadata":{"dataType":"org_chart","currentPlan":"essentials"}},{"customerId":"cust_004","event":"manual_export","module":"reporting","timestamp":"2026-01-28T10:30:00Z","metadata":{"dataType":"compliance_report","currentPlan":"essentials"}},{"customerId":"cust_004","event":"limit_hit","module":"reporting","timestamp":"2026-02-04T15:45:00Z","metadata":{"limitType":"scheduled_reports","currentValue":3,"maxValue":3,"currentPlan":"essentials"}},{"customerId":"cust_004","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-10T09:20:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"premium","feature":"turnover_dashboard"}},{"customerId":"cust_004","event":"locked_feature_click","module":"time_tracking","timestamp":"2026-02-18T11:10:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"shift_scheduling"}},{"customerId":"cust_004","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-25T14:00:00Z","metadata":{"addon":"eor","currentPlan":"essentials"}},{"customerId":"cust_004","event":"login","module":"core_hr","timestamp":"2026-03-02T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_004","event":"manual_export","module":"reporting","timestamp":"2026-03-09T10:00:00Z","metadata":{"dataType":"payroll_data","currentPlan":"essentials"}},{"customerId":"cust_005","event":"login","module":"core_hr","timestamp":"2026-01-03T09:10:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_005","event":"setup_step_completed","module":"employee_records","timestamp":"2026-01-03T09:20:00Z","metadata":{"module":"employee_records","step":"import_csv","stepNumber":1,"totalSteps":4}},{"customerId":"cust_005","event":"setup_step_skipped","module":"employee_records","timestamp":"2026-01-03T09:22:00Z","metadata":{"module":"employee_records","step":"custom_fields","stepNumber":2,"totalSteps":4}},{"customerId":"cust_005","event":"setup_step_skipped","module":"employee_records","timestamp":"2026-01-03T09:23:00Z","metadata":{"module":"employee_records","step":"document_templates","stepNumber":3,"totalSteps":4}},{"customerId":"cust_005","event":"setup_step_skipped","module":"employee_records","timestamp":"2026-01-03T09:24:00Z","metadata":{"module":"employee_records","step":"access_permissions","stepNumber":4,"totalSteps":4}},{"customerId":"cust_005","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-05T10:00:00Z","metadata":{"module":"pto","step":"policy_setup","stepNumber":1,"totalSteps":3}},{"customerId":"cust_005","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-05T10:01:00Z","metadata":{"module":"pto","step":"accrual_rules","stepNumber":2,"totalSteps":3}},{"customerId":"cust_005","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-05T10:02:00Z","metadata":{"module":"pto","step":"approval_workflow","stepNumber":3,"totalSteps":3}},{"customerId":"cust_005","event":"locked_feature_click","module":"ats","timestamp":"2026-02-10T14:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"applicant_tracking"}},{"customerId":"cust_006","event":"login","module":"core_hr","timestamp":"2026-01-15T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_006","event":"locked_feature_click","module":"performance","timestamp":"2026-01-20T10:45:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"360_feedback"}},{"customerId":"cust_006","event":"locked_feature_click","module":"analytics","timestamp":"2026-01-28T09:30:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"premium","feature":"predictive_attrition"}},{"customerId":"cust_006","event":"manual_export","module":"employee_records","timestamp":"2026-02-05T11:00:00Z","metadata":{"dataType":"employee_directory","currentPlan":"essentials"}},{"customerId":"cust_006","event":"limit_hit","module":"pto","timestamp":"2026-02-12T14:30:00Z","metadata":{"limitType":"pto_policies","currentValue":3,"maxValue":3,"currentPlan":"essentials"}},{"customerId":"cust_006","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-20T16:00:00Z","metadata":{"addon":"candidate_assessments","currentPlan":"essentials"}},{"customerId":"cust_006","event":"support_ticket_filed","module":"analytics","timestamp":"2026-03-02T10:30:00Z","metadata":{"topic":"Need workforce analytics dashboards","category":"feature_inquiry","currentPlan":"essentials"}},{"customerId":"cust_006","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-10T09:00:00Z","metadata":{"addon":"payroll","currentPlan":"essentials"}},{"customerId":"cust_007","event":"login","module":"core_hr","timestamp":"2026-01-20T08:30:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_007","event":"limit_hit","module":"employee_records","timestamp":"2026-01-25T15:00:00Z","metadata":{"limitType":"active_employees","currentValue":50,"maxValue":50,"currentPlan":"essentials"}},{"customerId":"cust_007","event":"limit_hit","module":"reporting","timestamp":"2026-02-01T10:00:00Z","metadata":{"limitType":"custom_reports","currentValue":5,"maxValue":5,"currentPlan":"essentials"}},{"customerId":"cust_007","event":"manual_export","module":"reporting","timestamp":"2026-02-06T14:20:00Z","metadata":{"dataType":"turnover_data","currentPlan":"essentials"}},{"customerId":"cust_007","event":"locked_feature_click","module":"time_tracking","timestamp":"2026-02-15T09:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"overtime_tracking"}},{"customerId":"cust_007","event":"locked_feature_click","module":"ats","timestamp":"2026-02-20T11:15:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"interview_scheduling"}},{"customerId":"cust_007","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-01T13:45:00Z","metadata":{"addon":"lms","currentPlan":"essentials"}},{"customerId":"cust_007","event":"login","module":"core_hr","timestamp":"2026-03-08T08:10:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_008","event":"login","module":"core_hr","timestamp":"2026-01-07T09:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_008","event":"setup_step_completed","module":"core_hr","timestamp":"2026-01-07T09:10:00Z","metadata":{"module":"core_hr","step":"company_profile","stepNumber":1,"totalSteps":5}},{"customerId":"cust_008","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-07T09:12:00Z","metadata":{"module":"core_hr","step":"department_structure","stepNumber":2,"totalSteps":5}},{"customerId":"cust_008","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-07T09:13:00Z","metadata":{"module":"core_hr","step":"import_employees","stepNumber":3,"totalSteps":5}},{"customerId":"cust_008","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-07T09:14:00Z","metadata":{"module":"core_hr","step":"configure_roles","stepNumber":4,"totalSteps":5}},{"customerId":"cust_008","event":"setup_step_skipped","module":"core_hr","timestamp":"2026-01-07T09:15:00Z","metadata":{"module":"core_hr","step":"notification_preferences","stepNumber":5,"totalSteps":5}},{"customerId":"cust_008","event":"manual_export","module":"employee_records","timestamp":"2026-02-15T11:00:00Z","metadata":{"dataType":"employee_roster","currentPlan":"essentials"}},{"customerId":"cust_009","event":"login","module":"core_hr","timestamp":"2026-01-12T08:45:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_009","event":"locked_feature_click","module":"ats","timestamp":"2026-01-18T10:30:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"job_postings"}},{"customerId":"cust_009","event":"locked_feature_click","module":"ats","timestamp":"2026-01-25T14:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"candidate_pipeline"}},{"customerId":"cust_009","event":"locked_feature_click","module":"time_tracking","timestamp":"2026-02-03T09:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"time_clock"}},{"customerId":"cust_009","event":"manual_export","module":"reporting","timestamp":"2026-02-10T15:30:00Z","metadata":{"dataType":"attendance_report","currentPlan":"essentials"}},{"customerId":"cust_009","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-18T10:00:00Z","metadata":{"addon":"eor","currentPlan":"essentials"}},{"customerId":"cust_009","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-25T14:30:00Z","metadata":{"addon":"candidate_assessments","currentPlan":"essentials"}},{"customerId":"cust_009","event":"support_ticket_filed","module":"time_tracking","timestamp":"2026-03-05T11:00:00Z","metadata":{"topic":"Need time tracking for hourly employees","category":"feature_inquiry","currentPlan":"essentials"}},{"customerId":"cust_010","event":"login","module":"core_hr","timestamp":"2026-01-04T07:30:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_010","event":"manual_export","module":"reporting","timestamp":"2026-01-10T10:00:00Z","metadata":{"dataType":"compensation_data","currentPlan":"essentials"}},{"customerId":"cust_010","event":"manual_export","module":"reporting","timestamp":"2026-01-20T14:00:00Z","metadata":{"dataType":"benefits_summary","currentPlan":"essentials"}},{"customerId":"cust_010","event":"locked_feature_click","module":"benefits_admin","timestamp":"2026-01-22T11:30:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"premium","feature":"benefits_enrollment"}},{"customerId":"cust_010","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-05T09:15:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"premium","feature":"compensation_benchmarking"}},{"customerId":"cust_010","event":"limit_hit","module":"employee_records","timestamp":"2026-02-15T16:00:00Z","metadata":{"limitType":"document_storage_gb","currentValue":5,"maxValue":5,"currentPlan":"essentials"}},{"customerId":"cust_010","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-28T10:00:00Z","metadata":{"addon":"payroll","currentPlan":"essentials"}},{"customerId":"cust_010","event":"login","module":"core_hr","timestamp":"2026-03-05T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_011","event":"login","module":"core_hr","timestamp":"2026-01-06T08:20:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_011","event":"locked_feature_click","module":"performance","timestamp":"2026-01-14T13:00:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"performance_reviews"}},{"customerId":"cust_011","event":"manual_export","module":"reporting","timestamp":"2026-01-22T10:00:00Z","metadata":{"dataType":"headcount_report","currentPlan":"essentials"}},{"customerId":"cust_011","event":"limit_hit","module":"reporting","timestamp":"2026-02-01T11:30:00Z","metadata":{"limitType":"custom_reports","currentValue":5,"maxValue":5,"currentPlan":"essentials"}},{"customerId":"cust_011","event":"locked_feature_click","module":"ats","timestamp":"2026-02-10T09:45:00Z","metadata":{"currentPlan":"essentials","requiredPlan":"advantage","feature":"applicant_tracking"}},{"customerId":"cust_011","event":"addon_page_view","module":"core_hr","timestamp":"2026-02-18T15:00:00Z","metadata":{"addon":"lms","currentPlan":"essentials"}},{"customerId":"cust_011","event":"support_ticket_filed","module":"ato","timestamp":"2026-03-01T10:00:00Z","metadata":{"topic":"Interested in applicant tracking features","category":"feature_inquiry","currentPlan":"essentials"}},{"customerId":"cust_012","event":"login","module":"core_hr","timestamp":"2026-01-02T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_012","event":"login","module":"core_hr","timestamp":"2026-01-16T08:10:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_012","event":"feature_first_use","module":"ats","timestamp":"2026-01-16T09:00:00Z","metadata":{"feature":"job_postings","module":"ats"}},{"customerId":"cust_012","event":"setup_step_completed","module":"ats","timestamp":"2026-01-16T09:15:00Z","metadata":{"module":"ats","step":"create_job_template","stepNumber":1,"totalSteps":4}},{"customerId":"cust_012","event":"setup_step_completed","module":"ats","timestamp":"2026-01-16T09:30:00Z","metadata":{"module":"ats","step":"configure_pipeline","stepNumber":2,"totalSteps":4}},{"customerId":"cust_012","event":"setup_step_completed","module":"ats","timestamp":"2026-01-16T09:45:00Z","metadata":{"module":"ats","step":"email_templates","stepNumber":3,"totalSteps":4}},{"customerId":"cust_012","event":"setup_step_completed","module":"ats","timestamp":"2026-01-16T10:00:00Z","metadata":{"module":"ats","step":"careers_page","stepNumber":4,"totalSteps":4}},{"customerId":"cust_012","event":"feature_first_use","module":"time_tracking","timestamp":"2026-01-23T10:30:00Z","metadata":{"feature":"time_clock","module":"time_tracking"}},{"customerId":"cust_012","event":"feature_first_use","module":"performance","timestamp":"2026-02-05T14:00:00Z","metadata":{"feature":"review_cycles","module":"performance"}},{"customerId":"cust_012","event":"login","module":"core_hr","timestamp":"2026-02-13T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_012","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-20T11:00:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"workforce_analytics"}},{"customerId":"cust_012","event":"locked_feature_click","module":"benefits_admin","timestamp":"2026-03-02T10:00:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"benefits_enrollment"}},{"customerId":"cust_012","event":"login","module":"core_hr","timestamp":"2026-03-09T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_013","event":"login","module":"core_hr","timestamp":"2026-01-05T09:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_013","event":"login","module":"core_hr","timestamp":"2026-01-12T08:45:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_013","event":"setup_step_completed","module":"time_tracking","timestamp":"2026-01-12T09:00:00Z","metadata":{"module":"time_tracking","step":"clock_in_rules","stepNumber":1,"totalSteps":3}},{"customerId":"cust_013","event":"setup_step_completed","module":"time_tracking","timestamp":"2026-01-12T09:20:00Z","metadata":{"module":"time_tracking","step":"overtime_policies","stepNumber":2,"totalSteps":3}},{"customerId":"cust_013","event":"setup_step_completed","module":"time_tracking","timestamp":"2026-01-12T09:40:00Z","metadata":{"module":"time_tracking","step":"approval_workflow","stepNumber":3,"totalSteps":3}},{"customerId":"cust_013","event":"feature_first_use","module":"performance","timestamp":"2026-01-20T11:00:00Z","metadata":{"feature":"goal_tracking","module":"performance"}},{"customerId":"cust_013","event":"feature_first_use","module":"ats","timestamp":"2026-02-02T14:00:00Z","metadata":{"feature":"candidate_pipeline","module":"ats"}},{"customerId":"cust_013","event":"login","module":"core_hr","timestamp":"2026-02-10T08:30:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_013","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-18T15:00:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"headcount_planning"}},{"customerId":"cust_013","event":"login","module":"core_hr","timestamp":"2026-03-02T08:20:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_013","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-10T10:30:00Z","metadata":{"addon":"candidate_assessments","currentPlan":"advantage"}},{"customerId":"cust_014","event":"login","module":"core_hr","timestamp":"2026-01-08T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_014","event":"login","module":"core_hr","timestamp":"2026-01-15T08:15:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_014","event":"locked_feature_click","module":"benefits_admin","timestamp":"2026-01-22T10:00:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"open_enrollment"}},{"customerId":"cust_014","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-01T14:30:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"dei_analytics"}},{"customerId":"cust_014","event":"feature_first_use","module":"performance","timestamp":"2026-02-10T09:00:00Z","metadata":{"feature":"360_feedback","module":"performance"}},{"customerId":"cust_014","event":"login","module":"core_hr","timestamp":"2026-02-20T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_014","event":"support_ticket_filed","module":"benefits_admin","timestamp":"2026-02-25T11:00:00Z","metadata":{"topic":"Open enrollment management options","category":"feature_inquiry","currentPlan":"advantage"}},{"customerId":"cust_014","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-05T14:00:00Z","metadata":{"addon":"payroll","currentPlan":"advantage"}},{"customerId":"cust_014","event":"login","module":"core_hr","timestamp":"2026-03-12T08:10:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-01-03T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-01-10T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-01-17T08:05:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"setup_step_completed","module":"benefits_admin","timestamp":"2026-01-17T09:00:00Z","metadata":{"module":"benefits_admin","step":"carrier_connections","stepNumber":1,"totalSteps":4}},{"customerId":"cust_015","event":"setup_step_completed","module":"benefits_admin","timestamp":"2026-01-17T09:30:00Z","metadata":{"module":"benefits_admin","step":"plan_configuration","stepNumber":2,"totalSteps":4}},{"customerId":"cust_015","event":"setup_step_completed","module":"benefits_admin","timestamp":"2026-01-17T10:00:00Z","metadata":{"module":"benefits_admin","step":"eligibility_rules","stepNumber":3,"totalSteps":4}},{"customerId":"cust_015","event":"setup_step_completed","module":"benefits_admin","timestamp":"2026-01-17T10:30:00Z","metadata":{"module":"benefits_admin","step":"enrollment_periods","stepNumber":4,"totalSteps":4}},{"customerId":"cust_015","event":"feature_first_use","module":"analytics","timestamp":"2026-01-24T14:00:00Z","metadata":{"feature":"workforce_analytics","module":"analytics"}},{"customerId":"cust_015","event":"feature_first_use","module":"analytics","timestamp":"2026-02-01T10:00:00Z","metadata":{"feature":"turnover_dashboard","module":"analytics"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-02-07T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"feature_first_use","module":"benefits_admin","timestamp":"2026-02-20T11:00:00Z","metadata":{"feature":"benefits_enrollment","module":"benefits_admin"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-03-06T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_015","event":"login","module":"core_hr","timestamp":"2026-03-13T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_016","event":"login","module":"core_hr","timestamp":"2026-01-05T09:30:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_016","event":"login","module":"core_hr","timestamp":"2026-01-19T09:00:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_016","event":"feature_first_use","module":"ats","timestamp":"2026-01-19T10:00:00Z","metadata":{"feature":"interview_scheduling","module":"ats"}},{"customerId":"cust_016","event":"setup_step_completed","module":"performance","timestamp":"2026-01-26T09:00:00Z","metadata":{"module":"performance","step":"review_templates","stepNumber":1,"totalSteps":3}},{"customerId":"cust_016","event":"setup_step_completed","module":"performance","timestamp":"2026-01-26T09:30:00Z","metadata":{"module":"performance","step":"rating_scales","stepNumber":2,"totalSteps":3}},{"customerId":"cust_016","event":"setup_step_completed","module":"performance","timestamp":"2026-01-26T10:00:00Z","metadata":{"module":"performance","step":"review_cycles","stepNumber":3,"totalSteps":3}},{"customerId":"cust_016","event":"locked_feature_click","module":"analytics","timestamp":"2026-02-08T14:00:00Z","metadata":{"currentPlan":"advantage","requiredPlan":"premium","feature":"custom_dashboards"}},{"customerId":"cust_016","event":"login","module":"core_hr","timestamp":"2026-02-16T08:30:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_016","event":"login","module":"core_hr","timestamp":"2026-03-02T09:00:00Z","metadata":{"userRole":"hr_manager"}},{"customerId":"cust_016","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-10T11:30:00Z","metadata":{"addon":"lms","currentPlan":"advantage"}},{"customerId":"cust_017","event":"login","module":"core_hr","timestamp":"2026-01-10T08:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_017","event":"setup_step_completed","module":"reporting","timestamp":"2026-01-10T09:00:00Z","metadata":{"module":"reporting","step":"connect_data_sources","stepNumber":1,"totalSteps":3}},{"customerId":"cust_017","event":"setup_step_skipped","module":"reporting","timestamp":"2026-01-10T09:05:00Z","metadata":{"module":"reporting","step":"schedule_reports","stepNumber":2,"totalSteps":3}},{"customerId":"cust_017","event":"setup_step_skipped","module":"reporting","timestamp":"2026-01-10T09:06:00Z","metadata":{"module":"reporting","step":"share_dashboards","stepNumber":3,"totalSteps":3}},{"customerId":"cust_017","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-15T10:00:00Z","metadata":{"module":"pto","step":"policy_setup","stepNumber":1,"totalSteps":3}},{"customerId":"cust_017","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-15T10:01:00Z","metadata":{"module":"pto","step":"accrual_rules","stepNumber":2,"totalSteps":3}},{"customerId":"cust_017","event":"setup_step_skipped","module":"pto","timestamp":"2026-01-15T10:02:00Z","metadata":{"module":"pto","step":"approval_workflow","stepNumber":3,"totalSteps":3}},{"customerId":"cust_017","event":"manual_export","module":"employee_records","timestamp":"2026-02-01T10:00:00Z","metadata":{"dataType":"employee_roster","currentPlan":"essentials"}},{"customerId":"cust_017","event":"support_ticket_filed","module":"core_hr","timestamp":"2026-02-15T14:00:00Z","metadata":{"topic":"Having trouble setting up PTO policies","category":"onboarding_help","currentPlan":"essentials"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-01-08T09:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-01-15T08:50:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-01-22T09:10:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-01-29T08:45:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_018","event":"setup_step_completed","module":"analytics","timestamp":"2026-01-29T09:00:00Z","metadata":{"module":"analytics","step":"connect_data_sources","stepNumber":1,"totalSteps":3}},{"customerId":"cust_018","event":"setup_step_completed","module":"analytics","timestamp":"2026-01-29T09:30:00Z","metadata":{"module":"analytics","step":"configure_dashboards","stepNumber":2,"totalSteps":3}},{"customerId":"cust_018","event":"setup_step_completed","module":"analytics","timestamp":"2026-01-29T10:00:00Z","metadata":{"module":"analytics","step":"schedule_insights","stepNumber":3,"totalSteps":3}},{"customerId":"cust_018","event":"feature_first_use","module":"benefits_admin","timestamp":"2026-02-05T11:00:00Z","metadata":{"feature":"open_enrollment","module":"benefits_admin"}},{"customerId":"cust_018","event":"feature_first_use","module":"analytics","timestamp":"2026-02-10T14:30:00Z","metadata":{"feature":"dei_analytics","module":"analytics"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-02-26T09:00:00Z","metadata":{"userRole":"admin"}},{"customerId":"cust_018","event":"addon_page_view","module":"core_hr","timestamp":"2026-03-03T10:00:00Z","metadata":{"addon":"eor","currentPlan":"premium"}},{"customerId":"cust_018","event":"login","module":"core_hr","timestamp":"2026-03-10T08:15:00Z","metadata":{"userRole":"admin"}}];
+
+</script>
+
+<script>
+// ============================================================
+// MapleHR Starter App
+// ============================================================
+
+const customers = DATA_CUSTOMERS;
+const modules = DATA_MODULES;
+const usageEvents = DATA_USAGE_EVENTS;
+let currentCustomer = customers[0];
+
+// Plan hierarchy for module access checks
+const PLAN_HIERARCHY = { essentials: 0, advantage: 1, premium: 2 };
+const PLAN_COLORS = {
+  essentials: 'bg-blue-100 text-blue-900',
+  advantage: 'bg-purple-100 text-purple-900',
+  premium: 'bg-amber-100 text-amber-900',
+};
+
+const ADMIN_NAMES = {
+  cust_001: 'Jordan Davis', cust_002: 'Megan Torres', cust_003: 'Ryan Patel',
+  cust_004: 'Sarah Kim', cust_005: 'Alex Rivera', cust_006: 'Dana Nguyen',
+  cust_007: 'Chris Morgan', cust_008: 'Taylor Brooks', cust_009: 'Jamie Reeves',
+  cust_010: 'Morgan Hayes', cust_011: 'Casey Flynn', cust_012: 'Avery Grant',
+  cust_013: 'Riley Quinn', cust_014: 'Peyton Cole', cust_015: 'Drew Sato',
+  cust_016: 'Skyler Webb', cust_017: 'Logan Chen', cust_018: 'Reese Harper',
+};
+function getAdminName(custId) { return ADMIN_NAMES[custId] || 'Jordan Davis'; }
+function getAdminInitials(custId) { const n = getAdminName(custId).split(' '); return n[0][0] + n[1][0]; }
+function getAdminFirstName(custId) { return getAdminName(custId).split(' ')[0]; }
+
+// -----------------------------------------------------------
+// Account Switcher
+// -----------------------------------------------------------
+function renderAccountSwitcher() {
+  const label = document.getElementById('account-switcher-label');
+  label.textContent = currentCustomer.company;
+  document.getElementById('admin-avatar').textContent = getAdminInitials(currentCustomer.id);
+
+  const list = document.getElementById('account-list');
+  renderAccountList(customers);
+
+  // Toggle dropdown
+  document.getElementById('account-switcher-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('account-switcher-dropdown').classList.toggle('hidden');
+    document.getElementById('account-search').focus();
+  });
+
+  // Search filter
+  document.getElementById('account-search').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    const filtered = customers.filter(c =>
+      c.company.toLowerCase().includes(q) || c.plan.toLowerCase().includes(q)
+    );
+    renderAccountList(filtered);
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => {
+    document.getElementById('account-switcher-dropdown').classList.add('hidden');
+  });
+  document.getElementById('account-switcher-dropdown').addEventListener('click', e => e.stopPropagation());
+}
+
+function renderAccountList(list) {
+  const container = document.getElementById('account-list');
+  container.innerHTML = list.map(c => `
+    <button
+      data-customer-id="${c.id}"
+      class="w-full text-left px-3 py-2 hover:bg-gray-50 flex items-center justify-between gap-2 ${c.id === currentCustomer.id ? 'bg-maple-50' : ''}"
+    >
+      <div>
+        <div class="text-sm font-medium text-gray-900">${c.company}</div>
+        <div class="text-xs text-gray-500">${c.employeeCount} employees</div>
+      </div>
+      <span class="px-1.5 py-0.5 rounded text-xs font-medium ${PLAN_COLORS[c.plan]}">${c.plan}</span>
+    </button>
+  `).join('');
+
+  container.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.customerId;
+      currentCustomer = customers.find(c => c.id === id);
+      document.getElementById('account-switcher-label').textContent = currentCustomer.company;
+      document.getElementById('admin-avatar').textContent = getAdminInitials(currentCustomer.id);
+      document.getElementById('account-switcher-dropdown').classList.add('hidden');
+      document.getElementById('account-search').value = '';
+      renderPage();
+    });
+  });
+}
+
+// -----------------------------------------------------------
+// Navigation
+// -----------------------------------------------------------
+const ALL_PAGES = ['home','modules','people','timeoff','hiring','timetracking','reports','performance','benefits','settings'];
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const page = link.dataset.page;
+    document.querySelectorAll('.nav-link').forEach(l => {
+      l.classList.remove('text-maple-700', 'bg-maple-50');
+      l.classList.add('text-gray-600');
+    });
+    link.classList.add('text-maple-700', 'bg-maple-50');
+    link.classList.remove('text-gray-600');
+
+    ALL_PAGES.forEach(p => {
+      const el = document.getElementById('page-' + p);
+      if (el) el.classList.toggle('hidden', p !== page);
+    });
+    renderPage();
+  });
+});
+
+// -----------------------------------------------------------
+// Rendering
+// -----------------------------------------------------------
+function renderPage() {
+  if (!currentCustomer) return;
+  renderHome();
+  renderModulesPage();
+  renderPeoplePage();
+  renderTimeOffPage();
+  renderHiringPage();
+  renderTimeTrackingPage();
+  renderReportsPage();
+  renderPerformancePage();
+  renderBenefitsPage();
+  renderSettingsPage();
+}
+
+function renderHome() {
+  const c = currentCustomer;
+
+  // Welcome heading
+  document.getElementById('welcome-heading').textContent = `Welcome back, ${getAdminFirstName(c.id)}`;
+
+  // Activity feed
+  renderActivityFeed();
+}
+
+function renderActivityFeed() {
+  const c = currentCustomer;
+  const events = usageEvents
+    .filter(e => e.customerId === c.id)
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+    .slice(0, 8);
+
+  const feed = document.getElementById('activity-feed');
+
+  if (events.length === 0) {
+    feed.innerHTML = `<div class="px-5 py-8 text-center text-sm text-gray-500">No recent activity</div>`;
+    return;
+  }
+
+  feed.innerHTML = events.map(e => {
+    const { icon, label, detail } = formatEvent(e);
+    const timeAgo = getTimeAgo(e.timestamp);
+    return `
+      <div class="px-5 py-3 flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${icon.bg}">
+          ${icon.svg}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm text-gray-900">${label}</p>
+          <p class="text-xs text-gray-500 mt-0.5">${detail}</p>
+        </div>
+        <span class="text-xs text-gray-500 whitespace-nowrap">${timeAgo}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatEvent(e) {
+  const icons = {
+    login: {
+      bg: 'bg-gray-100',
+      svg: '<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>',
+    },
+    locked_feature_click: {
+      bg: 'bg-orange-100',
+      svg: '<svg class="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>',
+    },
+    manual_export: {
+      bg: 'bg-blue-100',
+      svg: '<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+    },
+    setup_step_completed: {
+      bg: 'bg-green-100',
+      svg: '<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    },
+    setup_step_skipped: {
+      bg: 'bg-yellow-100',
+      svg: '<svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>',
+    },
+    feature_first_use: {
+      bg: 'bg-purple-100',
+      svg: '<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>',
+    },
+    support_ticket_filed: {
+      bg: 'bg-red-100',
+      svg: '<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    },
+    limit_hit: {
+      bg: 'bg-red-100',
+      svg: '<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>',
+    },
+    addon_page_view: {
+      bg: 'bg-indigo-100',
+      svg: '<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>',
+    },
+  };
+
+  const labels = {
+    login: () => `User logged in`,
+    locked_feature_click: () => `Attempted to access ${e.metadata?.feature || e.module} (requires ${e.metadata?.requiredPlan || 'upgrade'})`,
+    manual_export: () => `Exported ${e.metadata?.dataType || 'data'} manually`,
+    setup_step_completed: () => `Completed setup step: ${e.metadata?.step || 'Unknown'}`,
+    setup_step_skipped: () => `Skipped setup step: ${e.metadata?.step || 'Unknown'}`,
+    feature_first_use: () => `First time using ${e.metadata?.feature || e.module}`,
+    support_ticket_filed: () => `Filed support ticket: ${e.metadata?.topic || 'General inquiry'}`,
+    limit_hit: () => `Hit ${e.metadata?.limitType || 'usage'} limit (${e.metadata?.currentValue}/${e.metadata?.maxValue})`,
+    addon_page_view: () => `Viewed ${getModuleName(e.metadata?.addon || e.module)} add-on info`,
+  };
+
+  const details = {
+    login: () => e.metadata?.userRole || 'User',
+    locked_feature_click: () => `Current plan: ${e.metadata?.currentPlan || currentCustomer.plan}`,
+    manual_export: () => getModuleName(e.module),
+    setup_step_completed: () => `${getModuleName(e.metadata?.module || e.module)} — Step ${e.metadata?.stepNumber || '?'} of ${e.metadata?.totalSteps || '?'}`,
+    setup_step_skipped: () => `${getModuleName(e.metadata?.module || e.module)} — Step ${e.metadata?.stepNumber || '?'} of ${e.metadata?.totalSteps || '?'}`,
+    feature_first_use: () => getModuleName(e.module),
+    support_ticket_filed: () => e.metadata?.category || 'General',
+    limit_hit: () => `On ${e.metadata?.currentPlan || currentCustomer.plan} plan`,
+    addon_page_view: () => `On ${e.metadata?.currentPlan || currentCustomer.plan} plan`,
+  };
+
+  return {
+    icon: icons[e.event] || icons.login,
+    label: (labels[e.event] || (() => e.event))(),
+    detail: (details[e.event] || (() => ''))(),
+  };
+}
+
+// -----------------------------------------------------------
+// Upgrade Modal
+// -----------------------------------------------------------
+const ADVANTAGE_VALUE_PROPS = {
+  ats: 'Post jobs, manage candidates, and schedule interviews — all in one place.',
+  time_tracking: 'Track hours, approve timesheets, and sync directly with payroll.',
+  performance: 'Run structured review cycles, set goals, and collect continuous feedback.',
+};
+
+function maybeShowUpgradeModal(moduleId) {
+  const c = currentCustomer;
+  if (c.healthScore <= 65 || c.churnRisk === 'high') return;
+  const mod = (Array.isArray(modules) ? modules : []).find(m => m.id === moduleId);
+  if (!mod) return;
+  const valueProp = ADVANTAGE_VALUE_PROPS[moduleId] || mod.description;
+  document.getElementById('upgrade-modal-feature-name').textContent = mod.name;
+  document.getElementById('upgrade-modal-value-prop').textContent = valueProp;
+  // Reset to teaser panel
+  document.getElementById('upgrade-panel-teaser').classList.remove('hidden');
+  document.getElementById('upgrade-panel-confirm').classList.add('hidden');
+  document.getElementById('upgrade-modal').classList.remove('hidden');
+}
+
+function showConfirmPanel() {
+  const c = currentCustomer;
+  const monthlyIncrease = c.employeeCount * 3;
+  const annualIncrease = monthlyIncrease * 12;
+  document.getElementById('upgrade-cost-detail').textContent =
+    `${c.employeeCount} employees × $3/mo = $${monthlyIncrease.toLocaleString()}/mo additional`;
+  document.getElementById('upgrade-cost-annual').textContent =
+    `$${annualIncrease.toLocaleString()}/yr · billed as $${(c.employeeCount * 9).toLocaleString()}/mo total`;
+  document.getElementById('upgrade-panel-teaser').classList.add('hidden');
+  document.getElementById('upgrade-panel-confirm').classList.remove('hidden');
+}
+
+function closeUpgradeModal() {
+  document.getElementById('upgrade-modal').classList.add('hidden');
+}
+
+let toastTimer = null;
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-message').textContent = message;
+  toast.classList.remove('hidden', 'opacity-0');
+  toast.style.opacity = '1';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.classList.add('hidden'), 300);
+  }, 3000);
+}
+
+document.getElementById('upgrade-modal-close').addEventListener('click', closeUpgradeModal);
+document.getElementById('upgrade-modal-backdrop').addEventListener('click', closeUpgradeModal);
+document.getElementById('upgrade-modal-cta').addEventListener('click', showConfirmPanel);
+document.getElementById('upgrade-confirm-back').addEventListener('click', () => {
+  document.getElementById('upgrade-panel-teaser').classList.remove('hidden');
+  document.getElementById('upgrade-panel-confirm').classList.add('hidden');
+});
+document.getElementById('upgrade-confirm-cta').addEventListener('click', () => {
+  closeUpgradeModal();
+  showToast('Welcome to Advantage! Your plan has been upgraded.');
+});
+document.getElementById('upgrade-talk-to-sales').addEventListener('click', (e) => {
+  e.preventDefault();
+  closeUpgradeModal();
+  showToast('We\'ll be in touch! A MapleHR rep will reach out within 1 business day.');
+});
+
+// -----------------------------------------------------------
+// Modules Page
+// -----------------------------------------------------------
+function renderModulesPage() {
+  const c = currentCustomer;
+  const planLevel = PLAN_HIERARCHY[c.plan];
+
+  const activeContainer = document.getElementById('active-modules');
+  const addonContainer = document.getElementById('addon-modules');
+
+  const planModules = (Array.isArray(modules) ? modules : []).filter(m => m.type === 'plan_tier');
+  const addonModules = (Array.isArray(modules) ? modules : []).filter(m => m.type === 'addon');
+
+  // Active modules (ones the customer has activated)
+  const activeModules = planModules.filter(m => c.activeModules.includes(m.id));
+  activeContainer.innerHTML = activeModules.map(m => `
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <h3 class="text-sm font-semibold text-gray-900 mb-2">${m.name}</h3>
+      <p class="text-xs text-gray-500">${m.description}</p>
+    </div>
+  `).join('') || '<p class="text-sm text-gray-500">No active modules</p>';
+
+  // Add-ons (only show ones the customer has)
+  const activeAddons = addonModules.filter(m => c.addOns.includes(m.id));
+  addonContainer.innerHTML = activeAddons.map(m => `
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+      <div class="flex items-center gap-2 mb-2">
+        <h3 class="text-sm font-semibold text-gray-900">${m.name}</h3>
+        <span class="text-xs text-gray-500">${m.price}</span>
+      </div>
+      <p class="text-xs text-gray-500">${m.description}</p>
+    </div>
+  `).join('') || '<p class="text-sm text-gray-500">No active add-ons</p>';
+
+  // Locked Advantage modules — shown only for Essentials customers
+  const upsellSection = document.getElementById('advantage-upsell-section');
+  if (c.plan === 'essentials') {
+    upsellSection.classList.remove('hidden');
+    const lockedModules = planModules.filter(m =>
+      m.availableOn.includes('advantage') && !m.availableOn.includes('essentials')
+    );
+    const lockedContainer = document.getElementById('locked-advantage-modules');
+    lockedContainer.innerHTML = lockedModules.map(m => `
+      <div
+        class="bg-white rounded-xl border border-gray-200 p-5 cursor-pointer hover:border-purple-300 hover:bg-purple-50/40 transition-colors"
+        data-locked-module="${m.id}"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="text-sm font-semibold text-gray-500">${m.name}</h3>
+              <span class="px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">Advantage</span>
+            </div>
+            <p class="text-xs text-gray-400">${m.description}</p>
+          </div>
+          <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+      </div>
+    `).join('');
+
+    lockedContainer.querySelectorAll('[data-locked-module]').forEach(el => {
+      el.addEventListener('click', () => maybeShowUpgradeModal(el.dataset.lockedModule));
+    });
+  } else {
+    upsellSection.classList.add('hidden');
+  }
+}
+
+// -----------------------------------------------------------
+// People Page
+// -----------------------------------------------------------
+const MOCK_FIRST_NAMES = ['Sarah','Michael','Emily','James','Lisa','David','Jennifer','Robert','Maria','Daniel','Rachel','Kevin','Amanda','Brian','Nicole','Chris','Jessica','Andrew','Lauren','Tyler'];
+const MOCK_LAST_NAMES = ['Johnson','Chen','Martinez','Williams','Brown','Garcia','Miller','Davis','Rodriguez','Wilson','Anderson','Taylor','Thomas','Moore','Jackson','White','Harris','Martin','Lee','Clark'];
+const MOCK_DEPARTMENTS = ['Engineering','Sales','Marketing','Operations','Finance','HR','Customer Success','Product','Legal','IT'];
+const MOCK_TITLES = {
+  Engineering: ['Software Engineer','Sr. Engineer','Engineering Manager','QA Analyst','DevOps Engineer'],
+  Sales: ['Account Executive','Sales Rep','Sales Manager','BDR','Sales Director'],
+  Marketing: ['Marketing Coordinator','Content Manager','Marketing Director','Brand Specialist','Growth Lead'],
+  Operations: ['Operations Manager','Office Coordinator','Facilities Lead','Operations Analyst','COO'],
+  Finance: ['Accountant','Financial Analyst','Controller','AP Specialist','CFO'],
+  HR: ['HR Generalist','HR Manager','Recruiter','Benefits Coordinator','CHRO'],
+  'Customer Success': ['CS Manager','Support Specialist','CS Director','Onboarding Lead','Support Lead'],
+  Product: ['Product Manager','UX Designer','Product Director','UX Researcher','Product Analyst'],
+  Legal: ['Legal Counsel','Paralegal','Compliance Officer','Legal Assistant','General Counsel'],
+  IT: ['IT Admin','Systems Engineer','IT Manager','Help Desk','Security Analyst'],
+};
+
+function seededRandom(seed) {
+  let s = seed;
+  return function() { s = (s * 16807 + 0) % 2147483647; return s / 2147483647; };
+}
+
+function generateEmployees(count, companySeed) {
+  const rand = seededRandom(companySeed);
+  const employees = [];
+  for (let i = 0; i < count; i++) {
+    const dept = MOCK_DEPARTMENTS[Math.floor(rand() * MOCK_DEPARTMENTS.length)];
+    const titles = MOCK_TITLES[dept];
+    const firstName = MOCK_FIRST_NAMES[Math.floor(rand() * MOCK_FIRST_NAMES.length)];
+    const lastName = MOCK_LAST_NAMES[Math.floor(rand() * MOCK_LAST_NAMES.length)];
+    const startYear = 2020 + Math.floor(rand() * 6);
+    const startMonth = 1 + Math.floor(rand() * 12);
+    const statuses = ['Active','Active','Active','Active','Active','Active','Active','On Leave'];
+    employees.push({
+      name: `${firstName} ${lastName}`,
+      initials: firstName[0] + lastName[0],
+      dept,
+      title: titles[Math.floor(rand() * titles.length)],
+      status: statuses[Math.floor(rand() * statuses.length)],
+      startDate: `${startYear}-${String(startMonth).padStart(2,'0')}-${String(1 + Math.floor(rand() * 28)).padStart(2,'0')}`,
+    });
+  }
+  return employees;
+}
+
+function renderPeoplePage() {
+  const c = currentCustomer;
+  const seed = c.id.split('').reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  const employees = generateEmployees(c.employeeCount, seed);
+
+  document.getElementById('people-count').textContent = `${employees.length} employees`;
+  const tbody = document.getElementById('people-table-body');
+  tbody.innerHTML = employees.slice(0, 20).map(emp => {
+    const statusColor = emp.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+    return `<tr class="hover:bg-gray-50">
+      <td class="px-5 py-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-maple-100 text-maple-800 rounded-full flex items-center justify-center text-xs font-semibold">${emp.initials}</div>
+          <span class="text-sm font-medium text-gray-900">${emp.name}</span>
+        </div>
+      </td>
+      <td class="px-5 py-3 text-sm text-gray-600">${emp.dept}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${emp.title}</td>
+      <td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColor}">${emp.status}</span></td>
+      <td class="px-5 py-3 text-sm text-gray-500">${emp.startDate}</td>
+    </tr>`;
+  }).join('');
+  if (employees.length > 20) {
+    tbody.innerHTML += `<tr><td colspan="5" class="px-5 py-3 text-center text-xs text-gray-500">Showing 20 of ${employees.length} employees</td></tr>`;
+  }
+}
+
+// -----------------------------------------------------------
+// Time Off Page
+// -----------------------------------------------------------
+function renderTimeOffPage() {
+  const c = currentCustomer;
+  const seed = c.id.split('').reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  const employees = generateEmployees(c.employeeCount, seed);
+
+  // Who's out
+  const outContainer = document.getElementById('timeoff-whos-out');
+  const outPeople = employees.filter((_, i) => i % 7 === 0).slice(0, 4);
+  outContainer.innerHTML = outPeople.length ? outPeople.map((emp, i) => {
+    const types = ['Vacation','Sick Leave','Personal','Vacation'];
+    const days = ['Mar 14 – Mar 16','Mar 15','Mar 13 – Mar 17','Mar 16 – Mar 18'];
+    return `<div class="px-5 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-maple-100 text-maple-800 rounded-full flex items-center justify-center text-xs font-semibold">${emp.initials}</div>
+        <div>
+          <div class="text-sm font-medium text-gray-900">${emp.name}</div>
+          <div class="text-xs text-gray-500">${emp.dept}</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-sm text-gray-700">${types[i % types.length]}</div>
+        <div class="text-xs text-gray-500">${days[i % days.length]}</div>
+      </div>
+    </div>`;
+  }).join('') : '<div class="px-5 py-4 text-sm text-gray-500">No one is out this week</div>';
+
+  // Recent requests
+  const requestsBody = document.getElementById('timeoff-requests-body');
+  const requests = employees.slice(0, 6).map((emp, i) => {
+    const types = ['Vacation','Sick Leave','Vacation','Personal','Vacation','Sick Leave'];
+    const statuses = ['Approved','Approved','Pending','Approved','Denied','Approved'];
+    const dates = ['Mar 20 – Mar 24','Mar 10','Apr 1 – Apr 4','Mar 18','Feb 28 – Mar 1','Mar 7'];
+    const durations = ['5 days','1 day','4 days','1 day','2 days','1 day'];
+    const statusColors = { Approved: 'bg-green-100 text-green-700', Pending: 'bg-amber-100 text-amber-700', Denied: 'bg-red-100 text-red-700' };
+    return `<tr class="hover:bg-gray-50">
+      <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-7 h-7 bg-maple-100 text-maple-800 rounded-full flex items-center justify-center text-xs font-semibold">${emp.initials}</div><span class="text-sm text-gray-900">${emp.name}</span></div></td>
+      <td class="px-5 py-3 text-sm text-gray-600">${types[i]}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${dates[i]}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${durations[i]}</td>
+      <td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[statuses[i]]}">${statuses[i]}</span></td>
+    </tr>`;
+  });
+  requestsBody.innerHTML = requests.join('');
+}
+
+// -----------------------------------------------------------
+// Hiring Page
+// -----------------------------------------------------------
+function renderHiringPage() {
+  const c = currentCustomer;
+  const jobs = [
+    { title: 'Software Engineer', dept: 'Engineering', location: 'Remote', posted: '2026-02-28', candidates: 12, status: 'Active' },
+    { title: 'Marketing Coordinator', dept: 'Marketing', location: 'On-site', posted: '2026-03-05', candidates: 8, status: 'Active' },
+    { title: 'Operations Analyst', dept: 'Operations', location: 'Hybrid', posted: '2026-03-10', candidates: 4, status: 'Active' },
+  ];
+  const container = document.getElementById('hiring-jobs');
+  container.innerHTML = jobs.map(job => `
+    <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50">
+      <div>
+        <div class="text-sm font-medium text-gray-900">${job.title}</div>
+        <div class="text-xs text-gray-500">${job.dept} · ${job.location} · Posted ${getTimeAgo(job.posted + 'T12:00:00Z')}</div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div class="text-sm font-semibold text-gray-900">${job.candidates}</div>
+          <div class="text-xs text-gray-500">candidates</div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">${job.status}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// -----------------------------------------------------------
+// Time Tracking Page
+// -----------------------------------------------------------
+function renderTimeTrackingPage() {
+  const days = [
+    { day: 'Monday, Mar 10', clockIn: '8:55 AM', clockOut: '5:30 PM', break: '45m', total: '7h 50m', status: 'Approved' },
+    { day: 'Tuesday, Mar 11', clockIn: '9:02 AM', clockOut: '5:45 PM', break: '1h', total: '7h 43m', status: 'Approved' },
+    { day: 'Wednesday, Mar 12', clockIn: '8:48 AM', clockOut: '6:10 PM', break: '45m', total: '8h 37m', status: 'Approved' },
+    { day: 'Thursday, Mar 13', clockIn: '9:10 AM', clockOut: '5:15 PM', break: '30m', total: '7h 35m', status: 'Pending' },
+    { day: 'Friday, Mar 14', clockIn: '8:50 AM', clockOut: '4:30 PM', break: '45m', total: '6h 55m', status: 'Pending' },
+    { day: 'Saturday, Mar 15', clockIn: '—', clockOut: '—', break: '—', total: '—', status: '' },
+    { day: 'Sunday, Mar 16', clockIn: '—', clockOut: '—', break: '—', total: '—', status: '' },
+  ];
+  const tbody = document.getElementById('timetracking-body');
+  tbody.innerHTML = days.map(d => {
+    const statusBadge = d.status === 'Approved' ? '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Approved</span>' :
+                        d.status === 'Pending' ? '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">Pending</span>' : '';
+    return `<tr class="hover:bg-gray-50">
+      <td class="px-5 py-3 text-sm font-medium text-gray-900">${d.day}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${d.clockIn}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${d.clockOut}</td>
+      <td class="px-5 py-3 text-sm text-gray-600">${d.break}</td>
+      <td class="px-5 py-3 text-sm font-medium text-gray-900">${d.total}</td>
+      <td class="px-5 py-3">${statusBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+// -----------------------------------------------------------
+// Reports Page
+// -----------------------------------------------------------
+function renderReportsPage() {
+  const reports = [
+    { name: 'Headcount Summary', category: 'Workforce', lastRun: '2026-03-16', schedule: 'Weekly', format: 'PDF' },
+    { name: 'Turnover Analysis', category: 'Workforce', lastRun: '2026-03-14', schedule: 'Monthly', format: 'Excel' },
+    { name: 'PTO Balances', category: 'Time Off', lastRun: '2026-03-16', schedule: 'Weekly', format: 'Excel' },
+    { name: 'Compensation Report', category: 'Compensation', lastRun: '2026-03-01', schedule: 'Monthly', format: 'PDF' },
+    { name: 'New Hires Report', category: 'Onboarding', lastRun: '2026-03-10', schedule: '—', format: 'PDF' },
+    { name: 'Diversity & Inclusion', category: 'DEI', lastRun: '2026-03-01', schedule: 'Quarterly', format: 'PDF' },
+    { name: 'Benefits Enrollment', category: 'Benefits', lastRun: '2026-02-28', schedule: '—', format: 'Excel' },
+    { name: 'Department Headcount', category: 'Workforce', lastRun: '2026-03-15', schedule: 'Weekly', format: 'Excel' },
+  ];
+  const container = document.getElementById('reports-list');
+  container.innerHTML = reports.map(r => `
+    <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50">
+      <div class="flex items-center gap-4">
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center ${r.format === 'PDF' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
+          <span class="text-xs font-bold">${r.format === 'PDF' ? 'PDF' : 'XLS'}</span>
+        </div>
+        <div>
+          <div class="text-sm font-medium text-gray-900">${r.name}</div>
+          <div class="text-xs text-gray-500">${r.category} · Last run ${getTimeAgo(r.lastRun + 'T12:00:00Z')}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        ${r.schedule !== '—' ? `<span class="text-xs text-gray-500">${r.schedule}</span>` : ''}
+        <button class="px-3 py-1.5 text-xs font-medium text-maple-600 hover:bg-maple-50 rounded-md transition-colors">Run</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// -----------------------------------------------------------
+// Performance Page
+// -----------------------------------------------------------
+function renderPerformancePage() {
+  const c = currentCustomer;
+  const seed = c.id.split('').reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  const employees = generateEmployees(c.employeeCount, seed);
+
+  document.getElementById('performance-goals-count').textContent = Math.round(c.employeeCount * 2.5);
+
+  const reviewStatuses = ['Completed','Completed','In Progress','In Progress','Not Started','In Progress','Completed','Not Started'];
+  const selfStatuses = ['Done','Done','Done','In Progress','Not Started','Done','Done','Not Started'];
+  const managerStatuses = ['Done','Done','In Progress','Not Started','Not Started','In Progress','Done','Not Started'];
+
+  const tbody = document.getElementById('performance-reviews-body');
+  tbody.innerHTML = employees.slice(0, 8).map((emp, i) => {
+    const reviewStatus = reviewStatuses[i % reviewStatuses.length];
+    const selfStatus = selfStatuses[i % selfStatuses.length];
+    const mgrStatus = managerStatuses[i % managerStatuses.length];
+    const statusColors = { 'Completed': 'bg-green-100 text-green-700', 'In Progress': 'bg-amber-100 text-amber-700', 'Not Started': 'bg-gray-100 text-gray-500' };
+    const checkColors = { 'Done': 'text-green-600', 'In Progress': 'text-amber-600', 'Not Started': 'text-gray-500' };
+    const managers = employees.filter(e => e.title.includes('Manager') || e.title.includes('Director') || e.title.includes('Lead'));
+    const mgr = managers[i % Math.max(managers.length, 1)] || employees[(i + 5) % employees.length];
+    return `<tr class="hover:bg-gray-50">
+      <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-7 h-7 bg-maple-100 text-maple-800 rounded-full flex items-center justify-center text-xs font-semibold">${emp.initials}</div><span class="text-sm text-gray-900">${emp.name}</span></div></td>
+      <td class="px-5 py-3 text-sm text-gray-600">${mgr.name}</td>
+      <td class="px-5 py-3 text-sm ${checkColors[selfStatus]}">${selfStatus === 'Done' ? '✓ Done' : selfStatus}</td>
+      <td class="px-5 py-3 text-sm ${checkColors[mgrStatus]}">${mgrStatus === 'Done' ? '✓ Done' : mgrStatus}</td>
+      <td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[reviewStatus]}">${reviewStatus}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// -----------------------------------------------------------
+// Benefits Page
+// -----------------------------------------------------------
+function renderBenefitsPage() {
+  const c = currentCustomer;
+  const enrolled = Math.round(c.employeeCount * 0.85);
+  document.getElementById('benefits-enrolled').textContent = `${enrolled} / ${c.employeeCount}`;
+
+  const plans = [
+    { name: 'Medical — PPO Gold', carrier: 'Blue Cross Blue Shield', enrolled: Math.round(enrolled * 0.7), monthly: '$480', type: 'Medical' },
+    { name: 'Medical — HDHP', carrier: 'Blue Cross Blue Shield', enrolled: Math.round(enrolled * 0.3), monthly: '$320', type: 'Medical' },
+    { name: 'Dental — Standard', carrier: 'Delta Dental', enrolled: Math.round(enrolled * 0.9), monthly: '$45', type: 'Dental' },
+    { name: 'Vision — Basic', carrier: 'VSP', enrolled: Math.round(enrolled * 0.75), monthly: '$12', type: 'Vision' },
+    { name: 'Life Insurance — 1x Salary', carrier: 'MetLife', enrolled: enrolled, monthly: '$8', type: 'Life' },
+  ];
+
+  const container = document.getElementById('benefits-plans');
+  container.innerHTML = plans.map(plan => `
+    <div class="px-5 py-4 flex items-center justify-between hover:bg-gray-50">
+      <div>
+        <div class="text-sm font-medium text-gray-900">${plan.name}</div>
+        <div class="text-xs text-gray-500">${plan.carrier} · ${plan.monthly}/ee/mo</div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div class="text-sm font-semibold text-gray-900">${plan.enrolled}</div>
+          <div class="text-xs text-gray-500">enrolled</div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Active</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// -----------------------------------------------------------
+// Settings Page
+// -----------------------------------------------------------
+function renderSettingsPage() {
+  const c = currentCustomer;
+  document.getElementById('settings-company-name').value = c.company;
+  document.getElementById('settings-employee-count').value = c.employeeCount + ' employees';
+  document.getElementById('settings-plan').value = c.plan.charAt(0).toUpperCase() + c.plan.slice(1);
+  document.getElementById('settings-since').value = c.contractStartDate;
+}
+
+// -----------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------
+function getModuleName(id) {
+  const mod = (Array.isArray(modules) ? modules : []).find(m => m.id === id);
+  if (mod) return mod.name;
+  return id ? id.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown';
+}
+
+function getTimeAgo(timestamp) {
+  const now = new Date('2026-03-16T18:00:00Z'); // Simulated "now"
+  const then = new Date(timestamp);
+  const diffMs = now - then;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return `${Math.floor(diffDays / 30)}mo ago`;
+}
+
+// -----------------------------------------------------------
+// Init
+// -----------------------------------------------------------
+renderAccountSwitcher();
+renderPage();
+</script>
+</body>
+</html>
