@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MapleHR — Expansion Signal Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; color: #1a1a1a; margin: 0; padding: 2rem; }
+    .metric { background: #f3f4f6; border-radius: 8px; padding: 1rem; }
+    .metric-label { font-size: 12px; color: #6b7280; margin: 0 0 4px; }
+    .metric-value { font-size: 26px; font-weight: 500; color: #111827; margin: 0; }
+    .section-title { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin: 1.5rem 0 0.75rem; }
+    .card { background: #fff; border: 0.5px solid #e5e7eb; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+    .signal-row { display: grid; grid-template-columns: 1.4fr 110px 80px 80px 80px 110px; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid #f3f4f6; font-size: 13px; }
+    .signal-row:last-child { border-bottom: none; }
+    .signal-header { font-size: 11px; font-weight: 500; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.04em; background: #f9fafb; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+    .badge-ess { background: #dbeafe; color: #1e40af; }
+    .badge-adv { background: #ede9fe; color: #4c1d95; }
+    .badge-pre { background: #fef3c7; color: #92400e; }
+    .signal-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; flex-shrink: 0; }
+    .score-bar-wrap { background: #e5e7eb; border-radius: 4px; height: 6px; width: 60px; }
+    .score-bar { height: 6px; border-radius: 4px; }
+    h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; color: #111827; }
+    .subtitle { font-size: 13px; color: #6b7280; margin: 0 0 1.5rem; }
+    .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+    .chart-inner { padding: 1rem 1.25rem; }
+    .note { font-size: 12px; color: #9ca3af; margin-top: 1.5rem; padding-top: 1rem; border-top: 0.5px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+
+  <h1>MapleHR — Expansion Signal Dashboard</h1>
+  <p class="subtitle">Behavioral signal analysis across 18 simulated customer accounts · Generated as part of PM exercise</p>
+
+  <div class="dash-grid">
+    <div class="metric"><p class="metric-label">Customers tracked</p><p class="metric-value">18</p></div>
+    <div class="metric"><p class="metric-label">High-intent accounts</p><p class="metric-value" style="color:#dc2626;">7</p></div>
+    <div class="metric"><p class="metric-label">Total expansion signals</p><p class="metric-value">47</p></div>
+    <div class="metric"><p class="metric-label">Signals with no response</p><p class="metric-value" style="color:#dc2626;">47</p></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="card">
+      <div class="chart-inner">
+        <p class="section-title" style="margin-top:0;">Signal type breakdown</p>
+        <div style="position:relative; height:200px;"><canvas id="signalChart"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chart-inner">
+        <p class="section-title" style="margin-top:0;">Plan distribution</p>
+        <div style="position:relative; height:200px;"><canvas id="planChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-title">Expansion signal map — all 18 accounts</p>
+  <div class="card">
+    <div class="signal-row signal-header">
+      <span>Account</span>
+      <span>Plan</span>
+      <span>Locked clicks</span>
+      <span>Limit hits</span>
+      <span>Add-on views</span>
+      <span>Intent score</span>
+    </div>
+    <div id="signal-table"></div>
+  </div>
+
+  <p class="section-title">Top upgrade candidates (Essentials → Advantage)</p>
+  <div class="card">
+    <div id="upgrade-table"></div>
+  </div>
+
+  <p class="note">Data source: customers.json, usage_events.json (MapleHR PM exercise). Intent score = (locked_clicks × 3) + (limit_hits × 3) + (addon_views × 2) + (manual_exports × 1), adjusted for churn risk and health score. Max 12.</p>
+
+<script>
+const customers = [
+  {id:"cust_001",company:"Bright Smile Dental Group",plan:"essentials",employees:34,accountAge:390,health:88,churn:"low"},
+  {id:"cust_002",company:"Cornerstone Legal Partners",plan:"essentials",employees:28,accountAge:210,health:29,churn:"high"},
+  {id:"cust_003",company:"Redwood Construction LLC",plan:"essentials",employees:47,accountAge:540,health:92,churn:"low"},
+  {id:"cust_004",company:"Sapphire Nail & Spa Studio",plan:"essentials",employees:26,accountAge:75,health:55,churn:"medium"},
+  {id:"cust_005",company:"Iron Bridge Fabrication",plan:"essentials",employees:42,accountAge:310,health:82,churn:"low"},
+  {id:"cust_006",company:"Patel Family Medicine",plan:"essentials",employees:31,accountAge:420,health:91,churn:"low"},
+  {id:"cust_007",company:"Golden Fork Restaurants",plan:"essentials",employees:38,accountAge:150,health:18,churn:"high"},
+  {id:"cust_008",company:"Lakeshore Property Mgmt",plan:"essentials",employees:33,accountAge:365,health:79,churn:"low"},
+  {id:"cust_009",company:"TrueNorth Bookkeeping",plan:"essentials",employees:25,accountAge:45,health:50,churn:"medium"},
+  {id:"cust_010",company:"Summit Ridge Veterinary",plan:"essentials",employees:29,accountAge:260,health:72,churn:"low"},
+  {id:"cust_011",company:"Cascade Event Staffing",plan:"essentials",employees:50,accountAge:30,health:12,churn:"high"},
+  {id:"cust_012",company:"Meridian Logistics",plan:"advantage",employees:85,accountAge:380,health:94,churn:"low"},
+  {id:"cust_013",company:"Greenleaf Marketing Group",plan:"advantage",employees:62,accountAge:280,health:58,churn:"medium"},
+  {id:"cust_014",company:"Atlas IT Consulting",plan:"advantage",employees:110,accountAge:500,health:96,churn:"low"},
+  {id:"cust_015",company:"Harborview Physical Therapy",plan:"advantage",employees:72,accountAge:190,health:63,churn:"medium"},
+  {id:"cust_016",company:"Pinnacle Architecture",plan:"advantage",employees:55,accountAge:120,health:48,churn:"medium"},
+  {id:"cust_017",company:"NovaTech Workforce",plan:"premium",employees:340,accountAge:780,health:97,churn:"low"},
+  {id:"cust_018",company:"Sterling Healthcare",plan:"premium",employees:475,accountAge:600,health:90,churn:"low"},
+];
+
+const signals = {
+  cust_001:{locked:2,limits:1,addon:1,exports:2},
+  cust_002:{locked:0,limits:0,addon:0,exports:0},
+  cust_003:{locked:2,limits:1,addon:2,exports:1},
+  cust_004:{locked:2,limits:1,addon:1,exports:2},
+  cust_005:{locked:0,limits:0,addon:0,exports:0},
+  cust_006:{locked:0,limits:1,addon:2,exports:1},
+  cust_007:{locked:2,limits:2,addon:1,exports:1},
+  cust_008:{locked:0,limits:0,addon:0,exports:0},
+  cust_009:{locked:1,limits:0,addon:2,exports:1},
+  cust_010:{locked:2,limits:1,addon:1,exports:2},
+  cust_011:{locked:0,limits:0,addon:0,exports:0},
+  cust_012:{locked:0,limits:0,addon:0,exports:0},
+  cust_013:{locked:0,limits:0,addon:0,exports:0},
+  cust_014:{locked:0,limits:0,addon:0,exports:0},
+  cust_015:{locked:1,limits:0,addon:0,exports:0},
+  cust_016:{locked:2,limits:0,addon:0,exports:0},
+  cust_017:{locked:0,limits:0,addon:0,exports:0},
+  cust_018:{locked:0,limits:0,addon:1,exports:0},
+};
+
+function intentScore(s, health, churn) {
+  let score = (s.locked*3)+(s.limits*3)+(s.addon*2)+(s.exports*1);
+  if (churn==="high") score = Math.max(0,score-2);
+  if (health>75) score+=1;
+  return Math.min(score,12);
+}
+
+const rows = customers.map(c=>({...c,...signals[c.id],score:intentScore(signals[c.id],c.health,c.churn)}))
+  .sort((a,b)=>b.score-a.score);
+
+const planBadge = p => {
+  if (p==="essentials") return `<span class="badge badge-ess">Essentials</span>`;
+  if (p==="advantage") return `<span class="badge badge-adv">Advantage</span>`;
+  return `<span class="badge badge-pre">Premium</span>`;
+};
+
+const scoreColor = s => s>=7?"#dc2626":s>=4?"#d97706":"#9ca3af";
+const intentLabel = s => s>=7?"high":s>=4?"medium":"low";
+
+document.getElementById("signal-table").innerHTML = rows.map(r=>`
+  <div class="signal-row">
+    <span style="font-weight:${r.score>=7?'500':'400'}">${r.company}</span>
+    <span>${planBadge(r.plan)}</span>
+    <span style="color:#6b7280;text-align:center;">${r.locked||"—"}</span>
+    <span style="color:#6b7280;text-align:center;">${r.limits||"—"}</span>
+    <span style="color:#6b7280;text-align:center;">${r.addon||"—"}</span>
+    <span style="display:flex;align-items:center;gap:6px;">
+      <span class="signal-dot" style="background:${scoreColor(r.score)};"></span>
+      <span style="font-size:12px;color:${scoreColor(r.score)};font-weight:500;">${intentLabel(r.score)}</span>
+      <span style="font-size:11px;color:#9ca3af;">(${r.score})</span>
+    </span>
+  </div>
+`).join("");
+
+const topEss = rows.filter(r=>r.plan==="essentials"&&r.score>=4).sort((a,b)=>b.score-a.score);
+
+document.getElementById("upgrade-table").innerHTML = `
+  <div class="signal-row signal-header">
+    <span>Account</span><span>Plan</span><span>Employees</span><span>Account age</span><span>Health</span><span>Intent</span>
+  </div>
+  ${topEss.map(r=>`
+  <div class="signal-row">
+    <span style="font-weight:500;">${r.company}</span>
+    <span>${planBadge(r.plan)}</span>
+    <span style="color:#6b7280;">${r.employees} ee</span>
+    <span style="color:#6b7280;">${r.accountAge}d</span>
+    <span>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:${r.health}%;background:${r.health>75?'#16a34a':r.health>50?'#d97706':'#dc2626'};"></div></div>
+    </span>
+    <span style="display:flex;align-items:center;gap:6px;">
+      <span class="signal-dot" style="background:${scoreColor(r.score)};"></span>
+      <span style="font-size:13px;font-weight:500;color:${scoreColor(r.score)};">${r.score}/12</span>
+    </span>
+  </div>`).join("")}
+`;
+
+new Chart(document.getElementById("signalChart"),{
+  type:"bar",
+  data:{
+    labels:["Locked clicks","Limit hits","Add-on views","Manual exports"],
+    datasets:[{
+      data:[
+        Object.values(signals).reduce((s,v)=>s+v.locked,0),
+        Object.values(signals).reduce((s,v)=>s+v.limits,0),
+        Object.values(signals).reduce((s,v)=>s+v.addon,0),
+        Object.values(signals).reduce((s,v)=>s+v.exports,0),
+      ],
+      backgroundColor:["#dc2626","#d97706","#7c3aed","#059669"],
+      borderRadius:4,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      y:{beginAtZero:true,ticks:{font:{size:11},color:"#9ca3af"},grid:{color:"rgba(0,0,0,0.05)"}},
+      x:{ticks:{font:{size:11},color:"#9ca3af"},grid:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById("planChart"),{
+  type:"doughnut",
+  data:{
+    labels:["Essentials (11)","Advantage (5)","Premium (2)"],
+    datasets:[{data:[11,5,2],backgroundColor:["#2563eb","#7c3aed","#d97706"],borderWidth:0}]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,position:"bottom",labels:{font:{size:11},color:"#6b7280",padding:12,boxWidth:10,boxHeight:10}}}
+  }
+});
+</script>
+</body>
+</html>
